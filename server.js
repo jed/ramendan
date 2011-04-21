@@ -16,6 +16,7 @@ new TwitterNode({
   })
   .addListener( "tweet", function( tweet ) {
     if ( tweet.in_reply_to_user_id ) return
+    if ( tweet.user.id != 815114 ) return
     
     html = index.replace( "{{currently}}", tweet.text )
   })
