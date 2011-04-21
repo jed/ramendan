@@ -7,78 +7,105 @@
     
     <style>
       body {
+        font-family: "vinyl-1", "vinyl-2";
         font-size: 48px;
         color: #222;
-        background-color: #f0f0f0;
-        font-family: "vinyl-1","vinyl-2";
+        background-color: #eee;
+        line-height: 1.2;
+        cursor: default;
+        padding-top: 25px;
+        text-shadow: 0 1px 0 white;
       }
       
       a {
         color: #a00;
       }
       
-      #container {
-        width: 800px;
-        margin: 100px auto;
+      .column {
+        float: left;
+        margin: 0 5px;
+        overflow: hidden;
+        display: inline;
+      }
+
+      .row {
+        width: 960px;
+        margin: 0 auto;
+        overflow: hidden;
       }
       
-      li { list-style: none; }
+      .first {
+        margin-top: 30px;
+      }
+      
+      .left {
+        width: 145px;
+        text-align: right;
+        visibility: hidden;
+        color: #777;
+      }
 
-               .jed_is { visibility: hidden; color: #777; }
-      li:hover .jed_is { visibility: visible; }
+      .row:hover .left {
+        visibility: visible;
+      }
 
+      .right {
+        width: 785px;
+      }
     </style>
   </head>
   
   <body>
-    <div id="container">
-      <ul>
-        <li>
-          <span class="jed_is">jed is</span>
-          a japanese translator by day.
-        </li>
-  
-        <li>
-          <span class="jed_is">jed is</span>
-          a javascript developer by night.
-        </li>
-  
-        <li>
-          <span class="jed_is">jed is</span>
-          based in tokyo, japan.
-        </li>
-      </ul>
-  
-      <ul>
-        <li>
-          <span class="jed_is">jed is</span>
-          pushing javascript to <a href="/on/github">github</a>.
-        </li>
-  
-        <li>
-          <span class="jed_is">jed is</span>
-          snapping pics on <a href="/on/flickr">flickr</a>.
-        </li>
-  
-        <li>
-          <span class="jed_is">jed is</span>
-          mumbling on <a href="/on/twitter">twitter</a>.
-        </li>
-      </ul>
-  
-  <!-- 
-        <li>
-          <span class="jed_is">jed is</span>
-          currently ... (as of)
-        </li>
-   -->
-        
-      <ul>
-        <li>
-          <span class="jed_is">jed is</span>
-          reachable at <a href="mailto:tr@nslator.jp">tr@nslator.jp</a>.
-        </li>
-      </ul>
+
+    <div class="first row">
+      <div class="left column">jed is</div>
+      <div class="right column">a japanese translator by day.</div>
+    </div>
+
+    <div class="row">
+      <div class="left column">jed is</div>
+      <div class="right column">a javascript developer by night.</div>
+    </div>
+
+    <div class="row">
+      <div class="left column">jed is</div>
+      <div class="right column">based in tokyo, japan.</div>
+    </div>
+    
+
+
+    <div class="first row">
+      <div class="left column">jed is</div>
+      <div class="right column">pushing javascript on <a href="on/github">github</a>.</div>
+    </div>
+
+    <div class="row">
+      <div class="left column">jed is</div>
+      <div class="right column">snapping pics on <a href="on/flickr">flickr</a>.</div>
+    </div>
+
+    <div class="row">
+      <div class="left column">jed is</div>
+      <div class="right column">mumbling on <a href="/on/twitter">twitter</a>.</div>
+    </div>
+    
+
+
+    <div class="first row">
+      <div class="left column">jed is</div>
+      <div class="right column">{{currently}}</div>
+    </div>
+
+
+
+    <div class="first row">
+      <div class="left column">jed is</div>
+      <div class="right column">jed schmidt,</div>
+    </div>
+
+    <div class="row">
+      <div class="left column">and he is</div>
+      <div class="right column">reachable at <a href="mailto:tr@nslator.jp">tr@nslator.jp</a>.</div>
     </div>
   </body>
 </html>
