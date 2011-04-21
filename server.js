@@ -33,7 +33,7 @@ new TwitterNode({
     lastTweet = htmlify( tweet.text )
     html = index.replace( "{{lastTweet}}", lastTweet )
 
-    fs.writeFileSync( "./lastTweet.html", "utf-8" )    
+    fs.writeFileSync( "./lastTweet.html", lastTweet )    
   })
   .stream()
 
