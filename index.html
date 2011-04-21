@@ -7,36 +7,78 @@
     
     <style>
       body {
+        font-size: 48px;
         color: #222;
-        background-color: #eee;
+        background-color: #f0f0f0;
         font-family: "vinyl-1","vinyl-2";
-        font-size: 128px;
-        text-align: center;
-      }    
+      }
+      
+      a {
+        color: #a00;
+      }
+      
+      #container {
+        width: 800px;
+        margin: 100px auto;
+      }
+      
+      li { list-style: none; }
 
-      #floater {
-        float: left;
-        height: 50%;
-        margin-bottom: -120px;
-      }
-      
-      #content {
-        clear: both;
-        height: 240px;
-        line-height: 240px;
-        position: relative;
-      }
-      
-      #domain {
-        color: #888;
-      }
+               .jed_is { visibility: hidden; color: #777; }
+      li:hover .jed_is { visibility: visible; }
+
     </style>
   </head>
   
   <body>
-    <div id="floater"></div>
-    <div id="content">
-      <span id="domain">jed.is/</span>coming.soon...
+    <div id="container">
+      <ul>
+        <li>
+          <span class="jed_is">jed is</span>
+          a japanese translator by day.
+        </li>
+  
+        <li>
+          <span class="jed_is">jed is</span>
+          a javascript developer by night.
+        </li>
+  
+        <li>
+          <span class="jed_is">jed is</span>
+          based in tokyo, japan.
+        </li>
+      </ul>
+  
+      <ul>
+        <li>
+          <span class="jed_is">jed is</span>
+          pushing javascript to <a href="/on/github">github</a>.
+        </li>
+  
+        <li>
+          <span class="jed_is">jed is</span>
+          snapping pics on <a href="/on/flickr">flickr</a>.
+        </li>
+  
+        <li>
+          <span class="jed_is">jed is</span>
+          mumbling on <a href="/on/twitter">twitter</a>.
+        </li>
+      </ul>
+  
+  <!-- 
+        <li>
+          <span class="jed_is">jed is</span>
+          currently ... (as of)
+        </li>
+   -->
+        
+      <ul>
+        <li>
+          <span class="jed_is">jed is</span>
+          reachable at <a href="mailto:tr@nslator.jp">tr@nslator.jp</a>.
+        </li>
+      </ul>
     </div>
   </body>
 </html>
