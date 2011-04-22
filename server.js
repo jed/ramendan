@@ -1,9 +1,15 @@
 var http = require( "http" )
   , fs = require( "fs" )
-  , TwitterNode = require( "twitter-node" ).TwitterNode
+  
+  , credentials = require( "./credentials" )
   , index = fs.readFileSync( "./index.html", "utf-8" )
   , lastTweet = fs.readFileSync( "./lastTweet.html", "utf-8" )
+
+  , TwitterNode = require( "twitter-node" ).TwitterNode
+  , twit = new TwitterNode( credentials )
+
   , html = index.replace( "{{lastTweet}}", lastTweet )
+
   , sites = {
       github:  "//github.com/jed",
       twitter: "//twitter.com/jedschmidt",
@@ -12,20 +18,17 @@ var http = require( "http" )
     
 function htmlify( tweet ) {
   return tweet.replace(
-    /([@]+[A-Za-z0-9-_]+)|([#]+[A-Za-z0-9-_]+)|(\b(?:https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig,
+    /[@]+([A-Za-z0-9-_]+)|[#]+([A-Za-z0-9-_]+)|(\b(?:https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig,
     function( match, user, tag, url ) {
       return 0,
-        user ? user.link( user.replace( "@", "http://twitter.com/" ) ) :
-        tag ? tag.link( tag.replace( "#", "http://search.twitter.com/search?q=%23" ) ) :
+        user ? "@" + user.link( "http://twitter.com/" + user ) :
+        tag ? "#" + tag.link( "http://search.twitter.com/search?q=%23" + tag ) :
         url ? url.link( url.replace( /^https?:\/\//, "" ) ) : ""
     })
 }
     
-new TwitterNode({
-    user: "jedschmidt",
-    password: "yaM@47hz(#z",
-    follow: [ 815114 ]
-  })
+twit
+  .follow( 815114 )
   .addListener( "tweet", function( tweet ) {
     if ( tweet.in_reply_to_user_id ) return
     if ( tweet.user.id != 815114 ) return
@@ -52,8 +55,3 @@ server = http.createServer( function( req, res ) {
 })
  
 server.listen( process.env.PORT || 8001 )
-
-// https://gist.github.com/api/v1/json/gists/jed
-// http://github.com/api/v2/json/user/show/jed
-// http://gravatar.com/avatar/7b72d5a18ab92129692e97a76a153fe0?s=48
-
