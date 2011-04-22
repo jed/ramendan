@@ -23,7 +23,7 @@ function htmlify( tweet ) {
       return 0,
         user ? "@" + user.link( "http://twitter.com/" + user ) :
         tag ? "#" + tag.link( "http://search.twitter.com/search?q=%23" + tag ) :
-        url ? url.link( url.replace( /^https?:\/\//, "" ) ) : ""
+        url ? url.split( "//" )[ 1 ].link( url ) : ""
     })
 }
     
