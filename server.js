@@ -50,7 +50,10 @@ server = http.createServer( function( req, res ) {
     return res.end()
   }
   
-  res.writeHead( 200, { "Content-Type": "text/html" } )
+  res.writeHead( 200, {
+    "Content-Type": "text/html",
+    "Content-Length": Buffer.byteLength( html )
+  })
   res.end( html )
 })
  
