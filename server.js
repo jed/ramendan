@@ -1,20 +1,25 @@
 var http = require( "http" )
   , fs = require( "fs" )
+  , static = require( "node-static" )
   
   , credentials = require( "./credentials" )
-  , index = fs.readFileSync( "./index.html", "utf-8" )
+  , template = fs.readFileSync( "./template.html", "utf-8" )
   , lastTweet = fs.readFileSync( "./lastTweet.html", "utf-8" )
+  , html = template.replace( "{{lastTweet}}", lastTweet )
 
   , TwitterNode = require( "twitter-node" ).TwitterNode
   , twit = new TwitterNode( credentials )
-
-  , html = index.replace( "{{lastTweet}}", lastTweet )
 
   , sites = {
       github:  "//github.com/jed",
       twitter: "//twitter.com/jedschmidt",
       flickr:  "//flickr.com/photos/tr4nslator"
     }
+    
+  , server = http.createServer()
+  , file = new static.Server( "./public" )
+
+fs.writeFileSync( "./public/index.html", html )
     
 function htmlify( tweet ) {
   return tweet.replace(
@@ -34,27 +39,26 @@ twit
     if ( tweet.user.id != 815114 ) return
     
     lastTweet = htmlify( tweet.text )
-    html = index.replace( "{{lastTweet}}", lastTweet )
+    html = template.replace( "{{lastTweet}}", lastTweet )
 
-    fs.writeFileSync( "./lastTweet.html", lastTweet )    
+    fs.writeFileSync( "./public/index.html", html )
+    fs.writeFileSync( "./lastTweet.html", lastTweet )
   })
   .stream()
-
-server = http.createServer( function( req, res ) {
-  var url = req.url
-
-  if ( ~url.indexOf( "/on/" ) ) {
-    url = sites[ url.substr( 4 ) ] || "//jed.is/"
-
-    res.writeHead( 302, { "Location": url } )
-    return res.end()
-  }
   
-  res.writeHead( 200, {
-    "Content-Type": "text/html",
-    "Content-Length": Buffer.byteLength( html )
+server
+  .on( "request", function( req, res ) {
+    var url = req.url
+  
+    if ( ~url.indexOf( "/on/" ) ) {
+      url = sites[ url.substr( 4 ) ] || "//jed.is/"
+  
+      res.writeHead( 302, { "Location": url } )
+      return res.end()
+    }
+
+    req.addListener( "end", function() {
+      file.serve( req, res )
+    })
   })
-  res.end( html )
-})
- 
-server.listen( process.env.PORT || 8001 )
+  .listen( process.env.PORT || 8001 )
