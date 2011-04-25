@@ -11,9 +11,17 @@ var http = require( "http" )
   , twit = new TwitterNode( credentials )
 
   , sites = {
-      github:  "//github.com/jed",
-      twitter: "//twitter.com/jedschmidt",
-      flickr:  "//flickr.com/photos/tr4nslator"
+      on: {
+        "github":  "//github.com/jed",
+        "twitter": "//twitter.com/jedschmidt",
+        "flickr":  "//flickr.com/photos/tr4nslator"
+      },
+      
+      knownfor: {
+        "fab.js":    "//fabjs.org",
+        "typd.in":   "//typd.in",
+        "textpanda": "//textpanda.com"
+      }
     }
     
   , server = http.createServer()
@@ -51,7 +59,14 @@ server
     var url = req.url
   
     if ( ~url.indexOf( "/on/" ) ) {
-      url = sites[ url.substr( 4 ) ] || "//jed.is/"
+      url = sites.on[ url.substr( 4 ) ] || "//jed.is/"
+  
+      res.writeHead( 302, { "Location": url } )
+      return res.end()
+    }
+
+    else if ( ~url.indexOf( "/knownfor/" ) ) {
+      url = sites.knownfor[ url.substr( 10 ) ] || "//jed.is/"
   
       res.writeHead( 302, { "Location": url } )
       return res.end()
