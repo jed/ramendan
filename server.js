@@ -42,6 +42,9 @@ function htmlify( tweet ) {
     
 twit
   .follow( 815114 )
+  .addListener( "error", function( error ) {
+    console.log( error.message )
+  })
   .addListener( "tweet", function( tweet ) {
     if ( tweet.in_reply_to_user_id ) return
     if ( tweet.user.id != 815114 ) return
