@@ -3,26 +3,13 @@ var http = require( "http" )
   , static = require( "node-static" )
   
   , credentials = require( "./credentials" )
+  , redirects = require( "./redirects" )
   , template = fs.readFileSync( "./template.html", "utf-8" )
   , lastTweet = fs.readFileSync( "./lastTweet.html", "utf-8" )
   , html = template.replace( "{{lastTweet}}", lastTweet )
 
   , TwitterNode = require( "twitter-node" ).TwitterNode
   , twit = new TwitterNode( credentials )
-
-  , sites = {
-      on: {
-        "github":  "//github.com/jed",
-        "twitter": "//twitter.com/jedschmidt",
-        "flickr":  "//flickr.com/photos/tr4nslator"
-      },
-      
-      knownfor: {
-        "fab.js":    "//fabjs.org",
-        "typd.in":   "//typd.in",
-        "textpanda": "//textpanda.com"
-      }
-    }
     
   , server = http.createServer()
   , file = new static.Server( "./public" )
@@ -60,22 +47,13 @@ twit
 server
   .on( "request", function( req, res ) {
     var url = req.url
-  
-    if ( ~url.indexOf( "/on/" ) ) {
-      url = sites.on[ url.substr( 4 ) ] || "//jed.is/"
-  
-      res.writeHead( 302, { "Location": url } )
-      return res.end()
+    
+    if ( url in redirects ) {
+      res.writeHead( 302, { "Location": redirects[ url ] } )
+      res.end()
     }
 
-    else if ( ~url.indexOf( "/knownfor/" ) ) {
-      url = sites.knownfor[ url.substr( 10 ) ] || "//jed.is/"
-  
-      res.writeHead( 302, { "Location": url } )
-      return res.end()
-    }
-
-    req.addListener( "end", function() {
+    else req.addListener( "end", function() {
       file.serve( req, res )
     })
   })
