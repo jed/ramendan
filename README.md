@@ -14,7 +14,7 @@ pages
 - list of followers
 - leaderboard
 
-### ramendan.com/<user-name>
+### ramendan.com/__user-name__
 
 - only available for users following @ramendan
 - calendar of 31 days
