@@ -34,8 +34,14 @@ oa = new OAuth(
 )
 
 class Follower
-  @all: (cb) ->
-    db.zrevrange "/followers", 0, -1, cb
+  @latest: (cb) ->
+    db.zrevrange "/followers", 0, 19, (err, list) ->
+      i = list.length
+
+      do run = ->
+        return cb null, list unless i--
+        (new Follower id: list[i]).read (err, user) ->
+          list[i] = user; run()
 
   constructor: (attrs) ->
     @[key] = value for key, value of attrs
@@ -58,6 +64,7 @@ class Follower
     op = db.multi()
 
     op.hmset "/followers/#{@id}" , properties
+    op.hset  "/handles", @handle , @id
     op.zadd  "/followers"        , +new Date(@since), @id
 
     op.exec (err) => cb err, @
@@ -81,17 +88,15 @@ handleEvent = (data) ->
     follower.save (err, follower) ->
       return if err
 
-      handle = follower.handle
-
       console.log "new follower: #{follower.handle}"
 
       request = oa.post(
         "http://api.twitter.com/1/statuses/update.json"
         TWITTER_TOKEN
         TWITTER_TOKEN_SECRET
-        status: "@#{handle} Your #ramendan calendar is ready! http://ramendan.com/#{handle}"
+        status: "@#{follower.handle} Your #ramendan calendar is ready! http://ramendan.com/#{follower.handle}"
         (err, data) ->
-          console.log err or "confirmation sent to #{handle}."
+          console.log err or "confirmation sent to #{follower.handle}."
       )
 
 do connectStream = ->
@@ -113,9 +118,41 @@ do connectStream = ->
   
   request.end()
 
-server = http.createServer (req, res) ->
-  req.url is "favicon.ico" or req.url = "/"
-  req.addListener "end", -> file.serve req, res
+handlers = [
+  # get all followers
+  /^\/api\/followers\/latest$/
+  (req, cb) ->
+    Follower.latest cb
 
+  # get a follower by screen name
+  /^\/api\/followers\/(\w+)$/
+  (req, cb) ->
+    db.hget "/handles", req.captures[1], (err, id) ->
+      return cb 404 unless id
+
+      (new Follower id: id).read cb
+]
+
+server = http.createServer (req, res) ->
+  uri = url.parse req.url, true
+  path = uri.pathname
+  index = 0
+
+  while pattern = handlers[index++]
+    handler = handlers[index++]
+
+    if req.captures = path.match pattern
+      return handler req, (err, body) ->
+        callback = uri.query.callback?.match(/^\w+$/)?[0]
+        body = "#{callback or 'alert'}(#{JSON.stringify body})"
+
+        res.writeHead 200,
+          "Content-Length": Buffer.byteLength body
+          "Content-Type":   "text/javascript"
+
+        res.end body
+
+  file.serve req, res
+  
 server.listen PORT, ->
   console.log "ramendan running on port #{PORT}"
