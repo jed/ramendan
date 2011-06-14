@@ -1,3 +1,4 @@
 lib/env.js
 src/env.coffee
 node_modules
+*.swp
