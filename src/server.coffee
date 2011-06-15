@@ -55,10 +55,21 @@ class Follower
     uri = "/followers/#{@id}"
 
     db.exists uri, (err, exists) ->
-      if err or not exists then cb 404
+      if err then cb message: err
+      else if not exists then cb status: 404, message: "Not found."
       else db.hgetall uri, (err, props) ->
-        if err then cb err
-        else cb null, new Follower props
+        if err then cb message: err
+        else cb new Follower props
+
+  readEntries: (cb) ->
+    uri = "/followers/#{@id}"
+
+    db.exists uri, (err, exists) ->
+      if err then cb message: err
+      else if not exists then cb status: 404, message: "Not found."
+        db.zrange "#{uri}/entries", 0, -1, (err, list) ->
+          follower.entries = list
+          cb null, follower
 
   save: (cb) ->
     op = db.multi()
@@ -70,8 +81,27 @@ class Follower
     op.exec (err) => cb err, @
 
 class Entry
+  @latest: (cb) ->
+    db.zrevrange "/entries", 0, 19, (err, list) ->
+      i = list.length
+
+      do run = ->
+        return cb null, list unless i--
+        (new Entry id: list[i]).read (err, entry) ->
+          list[i] = entry; run()
+
   constructor: (attrs) ->
     @[key] = value for key, value of attrs
+
+  read: (cb) ->
+    uri = "/entries/#{@id}"
+
+    db.exists uri, (err, exists) ->
+      if err then cb message: err
+      else if not exists then cb status: 404, message: "Not found."
+      else db.hgetall uri, (err, props) ->
+        if err then cb message: err
+        else cb null, new Entry props
 
   save: (cb) ->
     op = db.multi()
@@ -128,15 +158,25 @@ onEntry = (data) ->
     url:  data.entities?.urls[0].url
     time: data.created_at
     invalid: no
+  
+  (new Follower id: entry.id).read (err, follower) ->
+    if err then oa.post(
+      "http://api.twitter.com/1/statuses/update.json"
+      TWITTER_TOKEN
+      TWITTER_TOKEN_SECRET
+      status: "@#{follower.handle} Sorry, you need to be a @ramendan follower to play. Try again."
+      (err, data) ->
+        console.log err or "got entry from non-follower: #{follower.handle}."
+    )
 
-  getDay lat, lng, (err, day) ->
-    entry.day = day
-    entry.invalid = err if err
-    getPhotoUrl entry.url, (err, url) ->
-      entry.invalid ||= err if err
-      entry.img = url
-      entry.save (err, entry) ->
-        console.log "new entry: #{entry.id} - #{entry.invalid or ''}"
+    else getDay lat, lng, (err, day) ->
+      entry.day = day
+      entry.invalid = err if err
+      getPhotoUrl entry.url, (err, url) ->
+        entry.invalid ||= err if err
+        entry.img = url
+        entry.save (err, entry) ->
+          console.log "new entry: #{entry.id} - #{entry.invalid or 'valid'}"
 
 onFollow = (data) ->
   follower = new Follower
@@ -153,7 +193,7 @@ onFollow = (data) ->
 
     console.log "new follower: #{follower.handle}"
 
-    request = oa.post(
+    oa.post(
       "http://api.twitter.com/1/statuses/update.json"
       TWITTER_TOKEN
       TWITTER_TOKEN_SECRET
@@ -192,7 +232,7 @@ do connectStream = ->
   request.end()
 
 handlers = [
-  # get all followers
+  # get latest followers
   /^\/api\/followers\/latest$/
   (req, cb) ->
     Follower.latest cb
@@ -204,6 +244,16 @@ handlers = [
       return cb 404 unless id
 
       (new Follower id: id).read cb
+
+  # get latest entries
+  /^\/api\/entries\/latest$/
+  (req, cb) ->
+    Entry.latest cb
+
+  # get an entry by id
+  /^\/api\/entries\/(\d+)$/
+  (req, cb) ->
+    (new Entry id: req.captures[1]).read cb
 ]
 
 server = http.createServer (req, res) ->
