@@ -59,17 +59,16 @@ class Follower
       else if not exists then cb status: 404, message: "Not found."
       else db.hgetall uri, (err, props) ->
         if err then cb message: err
-        else cb new Follower props
+        else cb null, new Follower props
 
   readEntries: (cb) ->
-    uri = "/followers/#{@id}"
+    db.zrange "/followers/#{@id}/entries", 0, -1, (err, list) ->
+      i = list.length
 
-    db.exists uri, (err, exists) ->
-      if err then cb message: err
-      else if not exists then cb status: 404, message: "Not found."
-        db.zrange "#{uri}/entries", 0, -1, (err, list) ->
-          follower.entries = list
-          cb null, follower
+      do run = ->
+        return cb null, list unless i--
+        (new Entry id: list[i]).read (err, entry) ->
+          list[i] = entry; run()
 
   save: (cb) ->
     op = db.multi()
@@ -149,6 +148,7 @@ getDay = (lat, lng, cb) ->
 
 onEntry = (data) ->
   [lat, lng] = data.geo.coordinates
+  handle = data.user.screen_name
 
   entry = new Entry
     id:   data.id_str
@@ -159,14 +159,14 @@ onEntry = (data) ->
     time: data.created_at
     invalid: no
   
-  (new Follower id: entry.id).read (err, follower) ->
+  (new Follower id: entry.user).read (err, follower) ->
     if err then oa.post(
       "http://api.twitter.com/1/statuses/update.json"
       TWITTER_TOKEN
       TWITTER_TOKEN_SECRET
-      status: "@#{follower.handle} Sorry, you need to be a @ramendan follower to play. Try again."
+      status: "@#{handle} Sorry, you need to be a @ramendan follower to play. Try again."
       (err, data) ->
-        console.log err or "got entry from non-follower: #{follower.handle}."
+        console.log err or "got entry from non-follower: #{handle}."
     )
 
     else getDay lat, lng, (err, day) ->
@@ -244,6 +244,13 @@ handlers = [
       return cb 404 unless id
 
       (new Follower id: id).read cb
+
+  # get entries for a follower by screen name
+  /^\/api\/followers\/(\w+)\/entries$/
+  (req, cb) ->
+    db.hget "/handles", req.captures[1], (err, id) ->
+      return cb 404 unless id
+      (new Follower id: id).readEntries cb
 
   # get latest entries
   /^\/api\/entries\/latest$/
