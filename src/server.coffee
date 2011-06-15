@@ -192,7 +192,8 @@ onFollow = (data) ->
     return if err
 
     console.log "new follower: #{follower.handle}"
-
+    
+    ###
     oa.post(
       "http://api.twitter.com/1/statuses/update.json"
       TWITTER_TOKEN
@@ -201,6 +202,7 @@ onFollow = (data) ->
       (err, data) ->
         console.log err or "confirmation sent to #{follower.handle}."
     )
+    ###
 
 onEvent = (data) ->
   return unless data?
