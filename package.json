@@ -4,7 +4,7 @@
   "dependencies": {
     "node-static": "",
     "redis": "",
-    "oauth": ""
+    "oauth": "",
     "embedly": ""
   }
 }
