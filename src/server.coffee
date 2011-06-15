@@ -4,6 +4,7 @@ url     = require "url"
 static  = require "node-static"
 redis   = require "redis"
 {OAuth} = require "oauth"
+embedly = require "embedly"
 
 env =
   try require "./env"
@@ -13,8 +14,12 @@ env =
   TWITTER_TOKEN_SECRET,
   TWITTER_KEY,
   TWITTER_SECRET,
+  TWITTER_ID,
   REDISTOGO_URL,
+  EMBEDLY,
   PORT } = env
+
+embedly = new embedly.Api key: EMBEDLY
 
 redisUrl = url.parse REDISTOGO_URL
 redisUrl.auth = (redisUrl.auth.split ":")[1]
@@ -56,48 +61,115 @@ class Follower
         else cb null, new Follower props
 
   save: (cb) ->
-    properties = {}
-
-    for own key, value of @
-      properties[key] = value if typeof value is "string"
-
     op = db.multi()
 
-    op.hmset "/followers/#{@id}" , properties
+    op.zadd  "/followers", +new Date(@since), @id
+    op.hmset "/followers/#{@id}" , @
     op.hset  "/handles", @handle , @id
-    op.zadd  "/followers"        , +new Date(@since), @id
+
+    op.exec (err) => cb err, @
+
+class Entry
+  constructor: (attrs) ->
+    @[key] = value for key, value of attrs
+
+  save: (cb) ->
+    op = db.multi()
+
+    op.zadd  "/entries", +new Date(@time), @id unless @invalid
+    op.hmset "/entries/#{@id}", @
+    op.zadd  "/followers/#{@user}/entries", @day, @id
 
     op.exec (err) => cb err, @
 
 # oa.get resources.followers, TWITTER_TOKEN, TWITTER_TOKEN_SECRET, (err, data) ->
 # console.log data
 
-handleEvent = (data) ->
+getPhotoUrl = (url, cb) ->
+  req = embedly.oembed url: url
+
+  req.on "complete", ([obj]) ->
+    if obj?.type is "photo"
+      cb null, obj.url
+    else
+      cb "not_a_photo"
+
+  req.start()
+
+getDay = (lat, lng, cb) ->
+  http.get
+    host: "api.geonames.org"
+    path: "/timezoneJSON?username=jed&lat=#{lat}&lng=#{lng}"
+
+    (response) ->
+      data = ""
+      response.setEncoding "utf8"
+      response.on "data", (chunk) -> data += chunk
+      response.on "end", ->
+        try
+          {sunrise, sunset, time} = JSON.parse data
+          dusk = time > sunset
+          dawn = time < sunrise
+          day  = time.split(" ")[0].replace /-/g, ""
+          err  = if dusk or dawn then null else "not_after_sunset"
+          cb err, day - dawn
+
+        catch e
+          cb e
+
+onEntry = (data) ->
+  [lat, lng] = data.geo.coordinates
+
+  entry = new Entry
+    id:   data.id_str
+    user: data.user.id_str
+    lat:  lat
+    lng:  lng
+    url:  data.entities?.urls[0].url
+    time: data.created_at
+    invalid: no
+
+  getDay lat, lng, (err, day) ->
+    entry.day = day
+    entry.invalid = err if err
+    getPhotoUrl entry.url, (err, url) ->
+      entry.invalid ||= err if err
+      entry.img = url
+      entry.save (err, entry) ->
+        console.log "new entry: #{entry.id} - #{entry.invalid or ''}"
+
+onFollow = (data) ->
+  follower = new Follower
+    id:     data.source.id_str
+    handle: data.source.screen_name
+    name:   data.source.name
+    img:    data.source.profile_image_url
+    blurb:  data.source.description
+    lang:   data.source.lang
+    since:  data.source.created_at
+
+  follower.save (err, follower) ->
+    return if err
+
+    console.log "new follower: #{follower.handle}"
+
+    request = oa.post(
+      "http://api.twitter.com/1/statuses/update.json"
+      TWITTER_TOKEN
+      TWITTER_TOKEN_SECRET
+      status: "@#{follower.handle} Your #ramendan calendar is ready! http://ramendan.com/#{follower.handle}"
+      (err, data) ->
+        console.log err or "confirmation sent to #{follower.handle}."
+    )
+
+onEvent = (data) ->
   return unless data?
-  
-  if data.event is "follow"
-    follower = new Follower
-      id:     data.source.id_str
-      handle: data.source.screen_name
-      name:   data.source.name
-      img:    data.source.profile_image_url
-      blurb:  data.source.description
-      lang:   data.source.lang
-      since:  data.source.created_at
+ 
+  if data.in_reply_to_user_id is TWITTER_ID and
+    data.geo and
+    data.entities?.urls.length then onEntry data
 
-    follower.save (err, follower) ->
-      return if err
-
-      console.log "new follower: #{follower.handle}"
-
-      request = oa.post(
-        "http://api.twitter.com/1/statuses/update.json"
-        TWITTER_TOKEN
-        TWITTER_TOKEN_SECRET
-        status: "@#{follower.handle} Your #ramendan calendar is ready! http://ramendan.com/#{follower.handle}"
-        (err, data) ->
-          console.log err or "confirmation sent to #{follower.handle}."
-      )
+  else if data.event is "follow" then onFollow data
 
 do connectStream = ->
   console.log "connecting to twitter..."
@@ -110,7 +182,8 @@ do connectStream = ->
     res.setEncoding "utf8"
   
     res.addListener "data", (chunk) ->
-      handleEvent try JSON.parse chunk
+      console.log chunk
+      onEvent try JSON.parse chunk
   
     res.addListener "end", (data) ->
       console.log "disconnected from twitter.", data
