@@ -62,7 +62,8 @@ class Follower
         else cb null, new Follower props
 
   readEntries: (cb) ->
-    db.zrange "/followers/#{@id}/entries", 0, -1, (err, list) ->
+    db.hgetall "/followers/#{@id}/entries", (err, all) ->
+      list = (value for key, value of all)
       i = list.length
 
       do run = ->
@@ -107,7 +108,7 @@ class Entry
 
     op.zadd  "/entries", +new Date(@time), @id unless @invalid
     op.hmset "/entries/#{@id}", @
-    op.zadd  "/followers/#{@user}/entries", @day, @id
+    op.hset  "/followers/#{@user}/entries", @day, @id
 
     op.exec (err) => cb err, @
 
@@ -224,7 +225,6 @@ do connectStream = ->
     res.setEncoding "utf8"
   
     res.addListener "data", (chunk) ->
-      console.log chunk
       onEvent try JSON.parse chunk
   
     res.addListener "end", (data) ->
