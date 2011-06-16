@@ -79,7 +79,7 @@ class User
 
 class Entry
   @latest: (cb) ->
-    db.lrange 0, -1, (err, list) ->
+    db.lrange 0, -1, (err, list = []) ->
       i = list.length
 
       do run = ->
@@ -102,9 +102,8 @@ class Entry
     op = db.multi()
     op.sadd "#{@user}/entries", @uri
 
-    unless @invalid
-      op.lpush "/entries/latest", @uri
-      op.ltrim "/entries/latest", 0, 19
+    op.lpush "/entries/latest", @uri
+    op.ltrim "/entries/latest", 0, 19
 
     op.hmset @uri, @
 
@@ -154,6 +153,7 @@ onEntry = (data) ->
     user: user.uri
     url:  data.entities?.urls[0].url
     time: data.created_at
+    text: data.text.slice 10
     invalid: no
 
   [entry.lat, entry.lng] = data.geo.coordinates
