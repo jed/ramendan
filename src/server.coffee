@@ -101,7 +101,7 @@ class Entry
 
   save: (cb) ->
     op = db.multi()
-    op.sadd "#{@user.uri}/entries", @day
+    op.sadd "#{@user}/entries", @day
 
     unless @invalid
       op.lpush "/entries/latest", @uri
@@ -121,7 +121,7 @@ getPhotoUrl = (url, cb) ->
     if obj?.type is "photo"
 	      cb null, obj.url
     else
-      cb "not_a_photo"
+      cb "notPhoto"
 
   req.start()
 
@@ -140,7 +140,7 @@ getDay = (lat, lng, cb) ->
           dusk = time > sunset
           dawn = time < sunrise
           day  = time.split(" ")[0].replace /-/g, ""
-          err  = if dusk or dawn then null else "not_after_sunset"
+          err  = if dusk or dawn then null else "notAfterSunset"
           cb err, day - dawn
 
         catch e
@@ -172,6 +172,7 @@ onEntry = (data) ->
     else getDay entry.lat, entry.lng, (err, day) ->
       entry.uri = "#{user.uri}/entries/#{day}"
       entry.invalid = err if err
+      entry.invalid ||= "notRamendan" if day < 20110731 or day > 20110829
       getPhotoUrl entry.url, (err, url) ->
         entry.invalid ||= err if err
         entry.img = url
