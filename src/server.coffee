@@ -243,7 +243,7 @@ handlers = [
   /^\/api\/users\/(\w+)$/
   (req, cb) ->
     db.hget "/handles", req.captures[1], (err, uri) ->
-      return cb 404 unless id
+      return cb 404 unless uri
 
       (new User uri: uri).read cb
 
@@ -251,7 +251,7 @@ handlers = [
   /^\/api\/users\/(\w+)\/entries$/
   (req, cb) ->
     db.hget "/handles", req.captures[1], (err, uri) ->
-      return cb 404 unless id
+      return cb 404 unless uri
       (new User uri: uri).readEntries cb
 
   # get latest entries
