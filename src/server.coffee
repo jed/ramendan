@@ -61,7 +61,7 @@ class User
 
   readEntries: (cb) ->
     uri = "#{@uri}/entries"
-    db.smembers uri, (err, all) ->
+    db.smembers uri, (err, list) ->
       i = list.length
 
       do run = ->
