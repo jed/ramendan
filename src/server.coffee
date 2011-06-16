@@ -224,7 +224,6 @@ do connectStream = ->
     res.setEncoding "utf8"
   
     res.addListener "data", (chunk) ->
-      console.log chunk
       onEvent try JSON.parse chunk
   
     res.addListener "end", (data) ->
