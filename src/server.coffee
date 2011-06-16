@@ -38,77 +38,76 @@ oa = new OAuth(
   "HMAC-SHA1"
 )
 
-class Follower
+class User
   @latest: (cb) ->
-    db.zrevrange "/followers", 0, 19, (err, list) ->
+    db.zrevrange "/users", 0, 19, (err, list) ->
       i = list.length
 
       do run = ->
         return cb null, list unless i--
-        (new Follower id: list[i]).read (err, user) ->
+        (new User uri: list[i]).read (err, user) ->
           list[i] = user; run()
 
   constructor: (attrs) ->
     @[key] = value for key, value of attrs
  
   read: (cb) ->
-    uri = "/followers/#{@id}"
-
-    db.exists uri, (err, exists) ->
+    db.exists @uri, (err, exists) =>
       if err then cb message: err
       else if not exists then cb status: 404, message: "Not found."
-      else db.hgetall uri, (err, props) ->
+      else db.hgetall @uri, (err, props) ->
         if err then cb message: err
-        else cb null, new Follower props
+        else cb null, new User props
 
   readEntries: (cb) ->
-    db.hgetall "/followers/#{@id}/entries", (err, all) ->
-      list = (value for key, value of all)
+    uri = "#{@uri}/entries"
+    db.smembers uri, (err, all) ->
       i = list.length
 
       do run = ->
         return cb null, list unless i--
-        (new Entry id: list[i]).read (err, entry) ->
+        (new Entry uri: "#{uri}/#{list[i]}").read (err, entry) ->
           list[i] = entry; run()
 
   save: (cb) ->
     op = db.multi()
 
-    op.zadd  "/followers", +new Date(@since), @id
-    op.hmset "/followers/#{@id}" , @
-    op.hset  "/handles", @handle , @id
+    op.hmset @uri , @
+    op.zadd  "/users", +new Date(@since), @uri
+    op.hset  "/handles", @handle , @uri
 
     op.exec (err) => cb err, @
 
 class Entry
   @latest: (cb) ->
-    db.zrevrange "/entries", 0, 19, (err, list) ->
+    db.lrange 0, -1, (err, list) ->
       i = list.length
 
       do run = ->
         return cb null, list unless i--
-        (new Entry id: list[i]).read (err, entry) ->
+        (new Entry uri: list[i]).read (err, entry) ->
           list[i] = entry; run()
 
   constructor: (attrs) ->
     @[key] = value for key, value of attrs
 
   read: (cb) ->
-    uri = "/entries/#{@id}"
-
-    db.exists uri, (err, exists) ->
+    db.exists @uri, (err, exists) =>
       if err then cb message: err
       else if not exists then cb status: 404, message: "Not found."
-      else db.hgetall uri, (err, props) ->
+      else db.hgetall @uri, (err, props) ->
         if err then cb message: err
         else cb null, new Entry props
 
   save: (cb) ->
     op = db.multi()
+    op.sadd "#{@user.uri}/entries", @day
 
-    op.zadd  "/entries", +new Date(@time), @id unless @invalid
-    op.hmset "/entries/#{@id}", @
-    op.hset  "/followers/#{@user}/entries", @day, @id
+    unless @invalid
+      op.lpush "/entries/latest", @uri
+      op.ltrim "/entries/latest", 0, 19
+
+    op.hmset @uri, @
 
     op.exec (err) => cb err, @
 
@@ -148,40 +147,40 @@ getDay = (lat, lng, cb) ->
           cb e
 
 onEntry = (data) ->
-  [lat, lng] = data.geo.coordinates
-  handle = data.user.screen_name
+  user = new User
+    uri: "/users/#{data.user.id_str}"
+    handle: data.user.screen_name
 
   entry = new Entry
-    id:   data.id_str
-    user: data.user.id_str
-    lat:  lat
-    lng:  lng
+    user: user.uri
     url:  data.entities?.urls[0].url
     time: data.created_at
     invalid: no
-  
-  (new Follower id: entry.user).read (err, follower) ->
-    if err then oa.post(
+
+  [entry.lat, entry.lng] = data.geo.coordinates
+
+  user.read (err) ->
+    if err then return oa.post(
       "http://api.twitter.com/1/statuses/update.json"
       TWITTER_TOKEN
       TWITTER_TOKEN_SECRET
-      status: "@#{handle} Sorry, you need to be a @ramendan follower to play. Try again."
+      status: "@#{user.handle} Sorry, you need to be a @ramendan follower to play. Try again."
       (err, data) ->
-        console.log err or "got entry from non-follower: #{handle}."
+        console.log err or "got entry from non-follower: #{user.handle}."
     )
 
-    else getDay lat, lng, (err, day) ->
-      entry.day = day
+    else getDay entry.lat, entry.lng, (err, day) ->
+      entry.uri = "#{user.uri}/entries/#{day}"
       entry.invalid = err if err
       getPhotoUrl entry.url, (err, url) ->
         entry.invalid ||= err if err
         entry.img = url
         entry.save (err, entry) ->
-          console.log "new entry: #{entry.id} - #{entry.invalid or 'valid'}"
+          console.log "new entry: #{entry.uri} - #{entry.invalid or 'valid'}"
 
 onFollow = (data) ->
-  follower = new Follower
-    id:     data.source.id_str
+  user = new User
+    uri:    "/users/#{data.source.id_str}"
     handle: data.source.screen_name.toLowerCase()
     name:   data.source.name
     img:    data.source.profile_image_url
@@ -189,30 +188,30 @@ onFollow = (data) ->
     lang:   data.source.lang
     since:  data.source.created_at
 
-  follower.save (err, follower) ->
+  user.save (err, follower) ->
     return if err
 
-    console.log "new follower: #{follower.handle}"
+    console.log "new follower: #{user.handle}"
     
     ###
     oa.post(
       "http://api.twitter.com/1/statuses/update.json"
       TWITTER_TOKEN
       TWITTER_TOKEN_SECRET
-      status: "@#{follower.handle} Your #ramendan calendar is ready! http://ramendan.com/#{follower.handle}"
+      status: "@#{user.handle} Your #ramendan calendar is ready! http://ramendan.com/#{user.handle}"
       (err, data) ->
-        console.log err or "confirmation sent to #{follower.handle}."
+        console.log err or "confirmation sent to #{user.handle}."
     )
     ###
 
 onEvent = (data) ->
   return unless data?
+
+  return onFollow data if data.event is "follow"
  
   if data.in_reply_to_user_id is TWITTER_ID and
     data.geo and
     data.entities?.urls.length then onEntry data
-
-  else if data.event is "follow" then onFollow data
 
 do connectStream = ->
   console.log "connecting to twitter..."
@@ -225,6 +224,7 @@ do connectStream = ->
     res.setEncoding "utf8"
   
     res.addListener "data", (chunk) ->
+      console.log chunk
       onEvent try JSON.parse chunk
   
     res.addListener "end", (data) ->
@@ -237,32 +237,27 @@ handlers = [
   # get latest followers
   /^\/api\/followers\/latest$/
   (req, cb) ->
-    Follower.latest cb
+    User.latest cb
 
   # get a follower by screen name
   /^\/api\/followers\/(\w+)$/
   (req, cb) ->
-    db.hget "/handles", req.captures[1], (err, id) ->
+    db.hget "/handles", req.captures[1], (err, uri) ->
       return cb 404 unless id
 
-      (new Follower id: id).read cb
+      (new User uri: uri).read cb
 
   # get entries for a follower by screen name
   /^\/api\/followers\/(\w+)\/entries$/
   (req, cb) ->
-    db.hget "/handles", req.captures[1], (err, id) ->
+    db.hget "/handles", req.captures[1], (err, uri) ->
       return cb 404 unless id
-      (new Follower id: id).readEntries cb
+      (new User uri: uri).readEntries cb
 
   # get latest entries
   /^\/api\/entries\/latest$/
   (req, cb) ->
     Entry.latest cb
-
-  # get an entry by id
-  /^\/api\/entries\/(\d+)$/
-  (req, cb) ->
-    (new Entry id: req.captures[1]).read cb
 ]
 
 server = http.createServer (req, res) ->
