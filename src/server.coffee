@@ -64,7 +64,6 @@ class Follower
   readEntries: (cb) ->
     db.hgetall "/followers/#{@id}/entries", (err, all) ->
       list = (value for key, value of all)
-      console.log "/followers/#{@id}/entries", list
       i = list.length
 
       do run = ->
