@@ -64,6 +64,7 @@ class Follower
   readEntries: (cb) ->
     db.hgetall "/followers/#{@id}/entries", (err, all) ->
       list = (value for key, value of all)
+      console.log "/followers/#{@id}/entries", list
       i = list.length
 
       do run = ->
@@ -182,7 +183,7 @@ onEntry = (data) ->
 onFollow = (data) ->
   follower = new Follower
     id:     data.source.id_str
-    handle: data.source.screen_name
+    handle: data.source.screen_name.toLowerCase()
     name:   data.source.name
     img:    data.source.profile_image_url
     blurb:  data.source.description
