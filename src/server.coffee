@@ -60,13 +60,12 @@ class User
         else cb null, new User props
 
   readEntries: (cb) ->
-    uri = "#{@uri}/entries"
-    db.smembers uri, (err, list) ->
+    db.smembers "#{@uri}/entries", (err, list) ->
       i = list.length
 
       do run = ->
         return cb null, list unless i--
-        (new Entry uri: "#{uri}/#{list[i]}").read (err, entry) ->
+        (new Entry uri: list[i]).read (err, entry) ->
           list[i] = entry; run()
 
   save: (cb) ->
@@ -101,7 +100,7 @@ class Entry
 
   save: (cb) ->
     op = db.multi()
-    op.sadd "#{@user}/entries", @day
+    op.sadd "#{@user}/entries", @uri
 
     unless @invalid
       op.lpush "/entries/latest", @uri
@@ -171,8 +170,8 @@ onEntry = (data) ->
 
     else getDay entry.lat, entry.lng, (err, day) ->
       entry.uri = "#{user.uri}/entries/#{day}"
-      entry.invalid = err if err
-      entry.invalid ||= "notRamendan" if day < 20110731 or day > 20110829
+      entry.invalid = "notRamendan" if day < 20110731 or day > 20110829
+      entry.invalid ||= err if err
       getPhotoUrl entry.url, (err, url) ->
         entry.invalid ||= err if err
         entry.img = url
