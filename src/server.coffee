@@ -119,7 +119,7 @@ getPhotoUrl = (url, cb) ->
 
   req.on "complete", ([obj]) ->
     if obj?.type is "photo"
-      cb null, obj.url
+	      cb null, obj.url
     else
       cb "not_a_photo"
 
@@ -188,10 +188,10 @@ onFollow = (data) ->
     lang:   data.source.lang
     since:  data.source.created_at
 
-  user.save (err, follower) ->
+  user.save (err, user) ->
     return if err
 
-    console.log "new follower: #{user.handle}"
+    console.log "new user: #{user.handle}"
     
     ###
     oa.post(
@@ -234,21 +234,21 @@ do connectStream = ->
   request.end()
 
 handlers = [
-  # get latest followers
-  /^\/api\/followers\/latest$/
+  # get latest users
+  /^\/api\/users\/latest$/
   (req, cb) ->
     User.latest cb
 
-  # get a follower by screen name
-  /^\/api\/followers\/(\w+)$/
+  # get a user by screen name
+  /^\/api\/users\/(\w+)$/
   (req, cb) ->
     db.hget "/handles", req.captures[1], (err, uri) ->
       return cb 404 unless id
 
       (new User uri: uri).read cb
 
-  # get entries for a follower by screen name
-  /^\/api\/followers\/(\w+)\/entries$/
+  # get entries for a user by screen name
+  /^\/api\/users\/(\w+)\/entries$/
   (req, cb) ->
     db.hget "/handles", req.captures[1], (err, uri) ->
       return cb 404 unless id
