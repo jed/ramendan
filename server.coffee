@@ -199,8 +199,6 @@ onFollow = (data) ->
 onEvent = (data) ->
   return unless data?
 
-  console.log "incoming event: #{data.event or 'heartbeat'}"
-
   return onFollow data if data.event is "follow"
  
   if data.in_reply_to_user_id is TWITTER_ID and
@@ -212,15 +210,20 @@ do connectStream = ->
 
   request = oa.get "https://userstream.twitter.com/2/user.json", TWITTER_TOKEN, TWITTER_TOKEN_SECRET
   
-  request.addListener "response", (res) ->
+  request.on "response", (res) ->
     console.log "connected to twitter."
 
     res.setEncoding "utf8"
   
-    res.addListener "data", (chunk) ->
-      onEvent try JSON.parse chunk
+    res.on "data", (chunk) ->
+      try onEvent JSON.parse chunk
+      catch e
+        console.log "heartbeat"
+
+    res.on "error", (error) ->
+      console.log "twitter stream error: #{error}"
   
-    res.addListener "end", (data) ->
+    res.on "end", (data) ->
       console.log "disconnected from twitter.", data
       setTimeout connectStream, 5000
   

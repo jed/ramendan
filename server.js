@@ -275,7 +275,6 @@
     if (data == null) {
       return;
     }
-    console.log("incoming event: " + (data.event || 'heartbeat'));
     if (data.event === "follow") {
       return onFollow(data);
     }
@@ -287,17 +286,20 @@
     var request;
     console.log("connecting to twitter...");
     request = oa.get("https://userstream.twitter.com/2/user.json", TWITTER_TOKEN, TWITTER_TOKEN_SECRET);
-    request.addListener("response", function(res) {
+    request.on("response", function(res) {
       console.log("connected to twitter.");
       res.setEncoding("utf8");
-      res.addListener("data", function(chunk) {
-        return onEvent((function() {
-          try {
-            return JSON.parse(chunk);
-          } catch (_e) {}
-        })());
+      res.on("data", function(chunk) {
+        try {
+          return onEvent(JSON.parse(chunk));
+        } catch (e) {
+          return console.log("heartbeat");
+        }
       });
-      return res.addListener("end", function(data) {
+      res.on("error", function(error) {
+        return console.log("twitter stream error: " + error);
+      });
+      return res.on("end", function(data) {
         console.log("disconnected from twitter.", data);
         return setTimeout(connectStream, 5000);
       });
