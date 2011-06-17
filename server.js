@@ -1,19 +1,31 @@
 (function() {
-  var EMBEDLY, Entry, OAuth, PORT, TWITTER_ID, TWITTER_KEY, TWITTER_SECRET, TWITTER_TOKEN, TWITTER_TOKEN_SECRET, User, connectStream, db, embedly, file, getDay, getPhotoUrl, handlers, http, oa, onEntry, onEvent, onFollow, redis, server, static, url, _ref;
+  var EMBEDLY, Entry, OAuth, PORT, TWITTER_ID, TWITTER_KEY, TWITTER_SECRET, TWITTER_TOKEN, TWITTER_TOKEN_SECRET, User, db, embedly, file, getDay, getPhotoUrl, handlers, http, onEntry, onEvent, onFollow, redis, server, static, twit, twitter, url;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   http = require("http");
   url = require("url");
+  PORT = process.env.PORT || 5000;
+  TWITTER_TOKEN = '315955679-zp64SIsgXwlW28qDEDt69APrql7u0AJFJFthJXoS';
+  TWITTER_TOKEN_SECRET = '4BYQzGuK3dd5tNbo8orWwiFS9f7dZOATvz8MrLnrQ';
+  TWITTER_KEY = 'tcrzlUrmOHd6idGBYC4KTA';
+  TWITTER_SECRET = 'JURa2YCNWAhgw47TubS6SoTWawGhSqYYEq94f2bdUc';
+  EMBEDLY = 'daf28dd296b811e0bc3c4040d3dc5c07';
+  TWITTER_ID = 315955679;
   static = require("node-static");
   redis = require("redis");
   OAuth = require("oauth").OAuth;
   embedly = require("embedly");
-  _ref = require("./env"), TWITTER_TOKEN = _ref.TWITTER_TOKEN, TWITTER_TOKEN_SECRET = _ref.TWITTER_TOKEN_SECRET, TWITTER_KEY = _ref.TWITTER_KEY, TWITTER_SECRET = _ref.TWITTER_SECRET, TWITTER_ID = _ref.TWITTER_ID, EMBEDLY = _ref.EMBEDLY, PORT = _ref.PORT;
+  twitter = require("twitter");
+  twit = new twitter({
+    consumer_key: TWITTER_KEY,
+    consumer_secret: TWITTER_SECRET,
+    access_token_key: TWITTER_TOKEN,
+    access_token_secret: TWITTER_TOKEN_SECRET
+  });
   embedly = new embedly.Api({
     key: EMBEDLY
   });
   db = redis.createClient();
   file = new static.Server("./public");
-  oa = new OAuth("https://twitter.com/oauth/request_token", "https://twitter.com/oauth/access_token", TWITTER_KEY, TWITTER_SECRET, "1.0A", "http://localhost:3000/oauth/callback", "HMAC-SHA1");
   User = (function() {
     User.latest = function(cb) {
       return db.zrevrange("/users", 0, 19, function(err, list) {
@@ -185,9 +197,9 @@
         return data += chunk;
       });
       return response.on("end", function() {
-        var dawn, day, dusk, err, sunrise, sunset, time, _ref2;
+        var dawn, day, dusk, err, sunrise, sunset, time, _ref;
         try {
-          _ref2 = JSON.parse(data), sunrise = _ref2.sunrise, sunset = _ref2.sunset, time = _ref2.time;
+          _ref = JSON.parse(data), sunrise = _ref.sunrise, sunset = _ref.sunset, time = _ref.time;
           dusk = time > sunset;
           dawn = time < sunrise;
           day = time.split(" ")[0].replace(/-/g, "");
@@ -200,19 +212,19 @@
     });
   };
   onEntry = function(data) {
-    var entry, user, _ref2, _ref3;
+    var entry, user, _ref, _ref2;
     user = new User({
       uri: "/users/" + data.user.id_str,
       handle: data.user.screen_name
     });
     entry = new Entry({
       user: user.uri,
-      url: (_ref2 = data.entities) != null ? _ref2.urls[0].url : void 0,
+      url: (_ref = data.entities) != null ? _ref.urls[0].url : void 0,
       time: data.created_at,
       text: data.text.slice(10),
       invalid: false
     });
-    _ref3 = data.geo.coordinates, entry.lat = _ref3[0], entry.lng = _ref3[1];
+    _ref2 = data.geo.coordinates, entry.lat = _ref2[0], entry.lng = _ref2[1];
     return user.read(function(err) {
       if (err) {
         return oa.post("http://api.twitter.com/1/statuses/update.json", TWITTER_TOKEN, TWITTER_TOKEN_SECRET, {
@@ -271,41 +283,17 @@
     });
   };
   onEvent = function(data) {
-    var _ref2;
-    if (data == null) {
-      return;
-    }
+    var _ref;
     if (data.event === "follow") {
       return onFollow(data);
     }
-    if (data.in_reply_to_user_id === TWITTER_ID && data.geo && ((_ref2 = data.entities) != null ? _ref2.urls.length : void 0)) {
+    if (data.in_reply_to_user_id === TWITTER_ID && data.geo && ((_ref = data.entities) != null ? _ref.urls.length : void 0)) {
       return onEntry(data);
     }
   };
-  (connectStream = function() {
-    var request;
-    console.log("connecting to twitter...");
-    request = oa.get("https://userstream.twitter.com/2/user.json", TWITTER_TOKEN, TWITTER_TOKEN_SECRET);
-    request.on("response", function(res) {
-      console.log("connected to twitter.");
-      res.setEncoding("utf8");
-      res.on("data", function(chunk) {
-        try {
-          return onEvent(JSON.parse(chunk));
-        } catch (e) {
-          return console.log("heartbeat");
-        }
-      });
-      res.on("error", function(error) {
-        return console.log("twitter stream error: " + error);
-      });
-      return res.on("end", function(data) {
-        console.log("disconnected from twitter.", data);
-        return setTimeout(connectStream, 5000);
-      });
-    });
-    return request.end();
-  })();
+  twit.stream("user", function(stream) {
+    return stream.on("data", onEvent);
+  });
   handlers = [
     /^\/api\/users\/latest$/, function(req, cb) {
       return User.latest(cb);
@@ -340,8 +328,8 @@
       handler = handlers[index++];
       if (req.captures = path.match(pattern)) {
         return handler(req, function(err, body) {
-          var callback, _ref2, _ref3;
-          callback = (_ref2 = uri.query.callback) != null ? (_ref3 = _ref2.match(/^\w+$/)) != null ? _ref3[0] : void 0 : void 0;
+          var callback, _ref, _ref2;
+          callback = (_ref = uri.query.callback) != null ? (_ref2 = _ref.match(/^\w+$/)) != null ? _ref2[0] : void 0 : void 0;
           body = "" + (callback || 'alert') + "(" + (JSON.stringify(body)) + ")";
           res.writeHead(200, {
             "Content-Length": Buffer.byteLength(body),
@@ -353,7 +341,7 @@
     }
     return file.serve(req, res);
   });
-  server.listen(process.env.PORT, function() {
-    return console.log("ramendan running on port " + process.env.PORT);
+  server.listen(PORT, function() {
+    return console.log("ramendan running on port " + PORT);
   });
 }).call(this);

@@ -1,34 +1,31 @@
 http    = require "http"
 url     = require "url"
 
+PORT                 = process.env.PORT or 5000
+TWITTER_TOKEN        = '315955679-zp64SIsgXwlW28qDEDt69APrql7u0AJFJFthJXoS'
+TWITTER_TOKEN_SECRET = '4BYQzGuK3dd5tNbo8orWwiFS9f7dZOATvz8MrLnrQ'
+TWITTER_KEY          = 'tcrzlUrmOHd6idGBYC4KTA'
+TWITTER_SECRET       = 'JURa2YCNWAhgw47TubS6SoTWawGhSqYYEq94f2bdUc'
+EMBEDLY              = 'daf28dd296b811e0bc3c4040d3dc5c07'
+TWITTER_ID           = 315955679
+
 static  = require "node-static"
 redis   = require "redis"
 {OAuth} = require "oauth"
 embedly = require "embedly"
+twitter = require "twitter"
 
-{ TWITTER_TOKEN,
-  TWITTER_TOKEN_SECRET,
-  TWITTER_KEY,
-  TWITTER_SECRET,
-  TWITTER_ID,
-  EMBEDLY,
-  PORT } = require "./env"
+twit = new twitter
+  consumer_key:        TWITTER_KEY
+  consumer_secret:     TWITTER_SECRET
+  access_token_key:    TWITTER_TOKEN
+  access_token_secret: TWITTER_TOKEN_SECRET
 
 embedly = new embedly.Api key: EMBEDLY
 
 db = redis.createClient()
 
 file = new static.Server "./public"
-
-oa = new OAuth(
-  "https://twitter.com/oauth/request_token",
-  "https://twitter.com/oauth/access_token",
-  TWITTER_KEY,
-  TWITTER_SECRET,
-  "1.0A",
-  "http://localhost:3000/oauth/callback",
-  "HMAC-SHA1"
-)
 
 class User
   @latest: (cb) ->
@@ -197,37 +194,14 @@ onFollow = (data) ->
     ###
 
 onEvent = (data) ->
-  return unless data?
-
   return onFollow data if data.event is "follow"
  
   if data.in_reply_to_user_id is TWITTER_ID and
     data.geo and
     data.entities?.urls.length then onEntry data
 
-do connectStream = ->
-  console.log "connecting to twitter..."
-
-  request = oa.get "https://userstream.twitter.com/2/user.json", TWITTER_TOKEN, TWITTER_TOKEN_SECRET
-  
-  request.on "response", (res) ->
-    console.log "connected to twitter."
-
-    res.setEncoding "utf8"
-  
-    res.on "data", (chunk) ->
-      try onEvent JSON.parse chunk
-      catch e
-        console.log "heartbeat"
-
-    res.on "error", (error) ->
-      console.log "twitter stream error: #{error}"
-  
-    res.on "end", (data) ->
-      console.log "disconnected from twitter.", data
-      setTimeout connectStream, 5000
-  
-  request.end()
+twit.stream "user", (stream) ->
+  stream.on "data", onEvent
 
 handlers = [
   # get latest users
@@ -277,5 +251,5 @@ server = http.createServer (req, res) ->
 
   file.serve req, res
   
-server.listen process.env.PORT, ->
-  console.log "ramendan running on port #{process.env.PORT}"
+server.listen PORT, ->
+  console.log "ramendan running on port #{PORT}"
