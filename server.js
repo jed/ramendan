@@ -14,17 +14,17 @@
   redis = require("redis");
   embedly = require("embedly");
   twitter = require("twitter");
+  file = new static.Server("./public");
+  db = redis.createClient();
+  embedly = new embedly.Api({
+    key: EMBEDLY
+  });
   twit = new twitter({
     consumer_key: TWITTER_KEY,
     consumer_secret: TWITTER_SECRET,
     access_token_key: TWITTER_TOKEN,
     access_token_secret: TWITTER_TOKEN_SECRET
   });
-  embedly = new embedly.Api({
-    key: EMBEDLY
-  });
-  db = redis.createClient();
-  file = new static.Server("./public");
   User = (function() {
     User.latest = function(cb) {
       return db.zrevrange("/users", 0, 19, function(err, list) {
