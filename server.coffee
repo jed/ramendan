@@ -199,6 +199,8 @@ onFollow = (data) ->
 onEvent = (data) ->
   return unless data?
 
+  console.log "incoming event: #{data.event or 'heartbeat'}"
+
   return onFollow data if data.event is "follow"
  
   if data.in_reply_to_user_id is TWITTER_ID and

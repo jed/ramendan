@@ -275,6 +275,7 @@
     if (data == null) {
       return;
     }
+    console.log("incoming event: " + (data.event || 'heartbeat'));
     if (data.event === "follow") {
       return onFollow(data);
     }
