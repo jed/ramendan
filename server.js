@@ -294,7 +294,16 @@
     return stream.on("data", onEvent);
   });
   handlers = [
-    /^\/api\/users\/latest$/, function(req, cb) {
+    /^\/api$/, function(req, cb) {
+      return Entry.latest(function(entries) {
+        return User.latest(function(users) {
+          return cb(null, {
+            entries: entries,
+            users: users
+          });
+        });
+      });
+    }, /^\/api\/users\/latest$/, function(req, cb) {
       return User.latest(cb);
     }, /^\/api\/users\/(\w+)$/, function(req, cb) {
       return db.hget("/handles", req.captures[1], function(err, uri) {
