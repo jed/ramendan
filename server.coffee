@@ -11,7 +11,6 @@ TWITTER_ID           = 315955679
 
 static  = require "node-static"
 redis   = require "redis"
-{OAuth} = require "oauth"
 embedly = require "embedly"
 twitter = require "twitter"
 

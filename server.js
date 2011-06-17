@@ -1,5 +1,5 @@
 (function() {
-  var EMBEDLY, Entry, OAuth, PORT, TWITTER_ID, TWITTER_KEY, TWITTER_SECRET, TWITTER_TOKEN, TWITTER_TOKEN_SECRET, User, db, embedly, file, getDay, getPhotoUrl, handlers, http, onEntry, onEvent, onFollow, redis, server, static, twit, twitter, url;
+  var EMBEDLY, Entry, PORT, TWITTER_ID, TWITTER_KEY, TWITTER_SECRET, TWITTER_TOKEN, TWITTER_TOKEN_SECRET, User, db, embedly, file, getDay, getPhotoUrl, handlers, http, onEntry, onEvent, onFollow, redis, server, static, twit, twitter, url;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   http = require("http");
   url = require("url");
@@ -12,7 +12,6 @@
   TWITTER_ID = 315955679;
   static = require("node-static");
   redis = require("redis");
-  OAuth = require("oauth").OAuth;
   embedly = require("embedly");
   twitter = require("twitter");
   twit = new twitter({
