@@ -39,13 +39,20 @@
     <p>From July 31st until August 30th, 2011</p>
 
     <script>
-       jsonp = function e(a,b,c,d){with(document)body.appendChild(createElement(d="script")).src=a+(c=d+(e.a=-~e.a));(a=window)[c]=function(d){a[c]=b(d)}}
+       jsonp =
+       function e(a,b,c,d){with(document)body.appendChild(createElement(d="script")).src=a+(c=d+(e.a=-~e.a));(a=window)[c]=function(d){a[c]=b(d)}}
 
-       jsonp( "/api/users/latest?callback=", function( data ) {
+       template =
+       function(a,b){return function(c,d){return a.replace(/#{([^}]*)}/g,function(a,e){return Function("x","with(x)return "+e).call(c,d||b||{})})}}
+       
+       route = 
+       function(a,b,c){function e(d){d=location.href;if(d!=c){for(b=0,c=d;(d=a[b++])&&!(d=d.exec(c));b++);a[b](d)}};e();setInterval(e,b||99)}
+
+       jsonp( "http://ramendan.com/api/users/latest?callback=", function( data ) {
          console.log( data )
        })
 
-       jsonp( "/api/entries/latest?callback=", function( data ) {
+       jsonp( "http://ramendan.com/api/entries/latest?callback=", function( data ) {
          console.log( data )
        })
     

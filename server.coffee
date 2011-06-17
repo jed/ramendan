@@ -67,7 +67,7 @@ class User
 
 class Entry
   @latest: (cb) ->
-    db.lrange 0, -1, (err, list = []) ->
+    db.lrange "/entries/latest", 0, -1, (err, list = []) ->
       i = list.length
 
       do run = ->

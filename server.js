@@ -105,7 +105,7 @@
   })();
   Entry = (function() {
     Entry.latest = function(cb) {
-      return db.lrange(0, -1, function(err, list) {
+      return db.lrange("/entries/latest", 0, -1, function(err, list) {
         var i, run;
         if (list == null) {
           list = [];
