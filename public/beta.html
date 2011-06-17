@@ -6,38 +6,57 @@
     <script type="text/javascript" src="http://use.typekit.com/oqd2vvf.js"></script>
     <script type="text/javascript">try{Typekit.load()}catch(e){}</script>
  -->
-    <style>
-      * {
-        border: 0;
-        margin: 0;
-      }
 
-      body {
-        font-family: sans-serif;
-        font-size: 200%;
-        text-align: center;
-        color: white;
-
-        background: -moz-linear-gradient(center top, #CF2900 0%, #000 40%);
-        background: -webkit-gradient(linear, 0% 0%, 0% 40%, from(#CF2900), to(#000000));
-        background-color:#000;
-      } 
-
-      h1 { font-size: 400% }
+    <script type="text/template" id="layout">
+      <html>
+        <head>
+          <style>
+            body {
+              color: white;
       
-    </style>
-  <body>
-    <br>
-    <br>
-    <br>
-    <p><script>document.write( daysLeft )</script> days left until...</p>
-    <br>
-    <h1 class="tk-neuzon">Ramendan</h1>
-    <br>
-    <br>
-    <p>One bowl of ramen, every night after sundown</p>
-    <p>From July 31st until August 30th, 2011</p>
+              background: -moz-linear-gradient(center top, #CF2900 0%, #000 40%);
+              background: -webkit-gradient(linear, 0% 0%, 0% 40%, from(#CF2900), to(#000000));
+              background-color:#000;
+            } 
+          </style>
+        </head>
+        <body>
+          <div id="container">
+            <h1 class="tk-neuzon">Ramendan</h1>
+            #{this}
+          </div>
+        </body>  
+      </html>
+    </script>
 
+    <script type="text/template" id="latestUsers">
+      <p>Latest users:</p>
+      <ul>
+        #{this.map(templates.latestUser)}
+      </ul>
+    </script>
+
+    <script type="text/template" id="latestUser">
+      <li>
+        <img src="#{this.img}">
+        <a href="/followers/#{this.handle}">#{this.name}</a> (<a href="/followers/#{this.handle}">#{this.handle}</a>)
+      </li>
+    </script>    
+
+    <script type="text/template" id="latestEntries">
+      <p>Latest entries:</p>
+      <ul>
+        #{this.map(templates.latestEntry)}
+      </ul>
+    </script>
+
+    <script type="text/template" id="latestEntry">
+      <li>
+        <img src="#{this.img}">
+        <a href="/followers/#{this.handle}">#{this.name}</a> (<a href="/followers/#{this.handle}">#{this.handle}</a>)
+      </li>
+    </script>    
+  <body>
     <script>
        jsonp =
        function e(a,b,c,d){with(document)body.appendChild(createElement(d="script")).src=a+(c=d+(e.a=-~e.a));(a=window)[c]=function(d){a[c]=b(d)}}
@@ -47,14 +66,31 @@
        
        route = 
        function(a,b,c){function e(d){d=location.href;if(d!=c){for(b=0,c=d;(d=a[b++])&&!(d=d.exec(c));b++);a[b](d)}};e();setInterval(e,b||99)}
+       
+       getTemplates =
+       function(a,b,c,d){for(a={},b=document.getElementsByTagName("script"),c=0;d=b[c++];/pt$/.test(d.type||"pt")||(a[d.id]=d.innerHTML));return a}
+       
+       map = 
+       Array.prototype.map=[].map||function(a){for(var b,c=this,d=Array(b=c.length),e=0;e<b;)d[e]=e in c&&a.call(arguments[1],c[e],e++,c);return d}
+       
+       write =
+       function(a,b,c){c=a.nodeType;c>8?a.close(a.open(),a.write(b)):a[[,"innerHTML","value"][c]||"nodeValue"]=b}
+       
+       templates = getTemplates()
+       for (var name in templates) {
+         templates[name] = template(templates[name], {templates: templates} )
+       }
+       
+
+       console.log(templates)
 
        jsonp( "http://ramendan.com/api/users/latest?callback=", function( data ) {
-         console.log( data )
+         write( document, templates.layout( templates.latestUsers( data ) ) )
        })
 
-       jsonp( "http://ramendan.com/api/entries/latest?callback=", function( data ) {
-         console.log( data )
-       })
+//        jsonp( "http://ramendan.com/api/entries/latest?callback=", function( data ) {
+//          console.log( data )
+//        })
     
     </script>
 

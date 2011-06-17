@@ -190,7 +190,7 @@ onFollow = (data) ->
     ###
 
 onEvent = (data) ->
-  return onFollow data if data.event is "follow"
+  return onFollow data if data.e<S-D-F1><S-D-F1>vent is "follow"
  
   if data.in_reply_to_user_id is TWITTER_ID and
     data.geo and
@@ -224,6 +224,12 @@ handlers = [
   /^\/api\/entries\/latest$/
   (req, cb) ->
     Entry.latest cb
+
+  # get front page
+  /^\/api$/
+  (req, cb) ->
+    Entry.latest (entries) -> User.latest (users) ->
+      cb null, entries: entries, users: users
 ]
 
 server = http.createServer (req, res) ->
