@@ -203,7 +203,7 @@ handlers = [
   # get front page
   /^\/api$/
   (req, cb) ->
-    Entry.latest (entries) -> User.latest (users) ->
+    Entry.latest (err, entries) -> User.latest (err, users) ->
       cb null, entries: entries, users: users
 
   # get latest users

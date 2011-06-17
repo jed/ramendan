@@ -295,8 +295,8 @@
   });
   handlers = [
     /^\/api$/, function(req, cb) {
-      return Entry.latest(function(entries) {
-        return User.latest(function(users) {
+      return Entry.latest(function(err, entries) {
+        return User.latest(function(err, users) {
           return cb(null, {
             entries: entries,
             users: users
