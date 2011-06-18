@@ -120,7 +120,7 @@
           }
           return (new Entry({
             uri: list[i]
-          })).read(function(err, entry) {
+          })).readWithUser(function(err, entry) {
             list[i] = entry;
             return run();
           });
@@ -157,6 +157,19 @@
           });
         }
       }, this));
+    };
+    Entry.prototype.readWithUser = function(cb) {
+      return this.read(function(err, entry) {
+        if (err) {
+          return cb(err);
+        }
+        return (new User({
+          uri: entry.user
+        })).read(function(err, user) {
+          entry.user = user;
+          return cb(err, user);
+        });
+      });
     };
     Entry.prototype.save = function(cb) {
       var op;
@@ -328,15 +341,6 @@
         return (new User({
           uri: uri
         })).readWithEntries(cb);
-      });
-    }, /^\/api\/users\/(\w+)\/entries$/, function(req, cb) {
-      return db.hget("/handles", req.captures[1], function(err, uri) {
-        if (!uri) {
-          return cb(404);
-        }
-        return (new User({
-          uri: uri
-        })).readEntries(cb);
       });
     }, /^\/api\/entries\/latest$/, function(req, cb) {
       return Entry.latest(cb);

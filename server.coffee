@@ -74,7 +74,7 @@ class Entry
 
       do run = ->
         return cb null, list unless i--
-        (new Entry uri: list[i]).read (err, entry) ->
+        (new Entry uri: list[i]).readWithUser (err, entry) ->
           list[i] = entry; run()
 
   constructor: (attrs) ->
@@ -87,6 +87,14 @@ class Entry
       else db.hgetall @uri, (err, props) ->
         if err then cb message: err
         else cb null, new Entry props
+
+  readWithUser: (cb) ->
+    @read (err, entry) ->
+      return cb err if err
+
+      (new User uri: entry.user).read (err, user) ->
+        entry.user = user
+        cb err, user
 
   save: (cb) ->
     op = db.multi()
@@ -229,13 +237,6 @@ handlers = [
       return cb 404 unless uri
 
       (new User uri: uri).readWithEntries cb
-
-  # get entries for a user by screen name
-  /^\/api\/users\/(\w+)\/entries$/
-  (req, cb) ->
-    db.hget "/handles", req.captures[1], (err, uri) ->
-      return cb 404 unless uri
-      (new User uri: uri).readEntries cb
 
   # get latest entries
   /^\/api\/entries\/latest$/
