@@ -167,7 +167,7 @@
           uri: entry.user
         })).read(function(err, user) {
           entry.user = user;
-          return cb(err, user);
+          return cb(err, entry);
         });
       });
     };

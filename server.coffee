@@ -94,7 +94,7 @@ class Entry
 
       (new User uri: entry.user).read (err, user) ->
         entry.user = user
-        cb err, user
+        cb err, entry
 
   save: (cb) ->
     op = db.multi()
