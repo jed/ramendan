@@ -241,13 +241,16 @@ handlers = [
 server = http.createServer (req, res) ->
   uri = url.parse req.url, true
   path = uri.pathname
+  lang = req.headers["accept-language"]?.toLowerCase().match(/en|ja/g)?[0] or "en"
   index = 0
 
   while pattern = handlers[index++]
     handler = handlers[index++]
 
     if req.captures = path.match pattern
-      return handler req, (err, body) ->
+      return handler req, (err, data) ->
+        body = data: data, lang: lang
+
         callback = uri.query.callback?.match(/^\w+$/)?[0]
         body = "#{callback or 'alert'}(#{JSON.stringify body})"
 

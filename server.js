@@ -340,16 +340,21 @@
     }
   ];
   server = http.createServer(function(req, res) {
-    var handler, index, path, pattern, uri;
+    var handler, index, lang, path, pattern, uri, _ref, _ref2;
     uri = url.parse(req.url, true);
     path = uri.pathname;
+    lang = ((_ref = req.headers["accept-language"]) != null ? (_ref2 = _ref.toLowerCase().match(/en|ja/g)) != null ? _ref2[0] : void 0 : void 0) || "en";
     index = 0;
     while (pattern = handlers[index++]) {
       handler = handlers[index++];
       if (req.captures = path.match(pattern)) {
-        return handler(req, function(err, body) {
-          var callback, _ref, _ref2;
-          callback = (_ref = uri.query.callback) != null ? (_ref2 = _ref.match(/^\w+$/)) != null ? _ref2[0] : void 0 : void 0;
+        return handler(req, function(err, data) {
+          var body, callback, _ref3, _ref4;
+          body = {
+            data: data,
+            lang: lang
+          };
+          callback = (_ref3 = uri.query.callback) != null ? (_ref4 = _ref3.match(/^\w+$/)) != null ? _ref4[0] : void 0 : void 0;
           body = "" + (callback || 'alert') + "(" + (JSON.stringify(body)) + ")";
           res.writeHead(200, {
             "Content-Length": Buffer.byteLength(body),
