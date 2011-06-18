@@ -152,6 +152,7 @@ onEntry = (data) ->
     )
 
     else getDay entry.lat, entry.lng, (err, day) ->
+      if err then return console.log "could not get valid day"
       entry.uri = "#{user.uri}/entries/#{day}"
       entry.invalid = "notRamendan" if day < 20110731 or day > 20110829
       entry.invalid ||= err if err
@@ -197,7 +198,7 @@ twit.stream "user", (stream) ->
   stream.on "data", (data) ->
     mention = data.in_reply_to_user_id is TWITTER_ID
     location = data.geo?.coordinates
-    url = data.entities?.urls?[0]
+    uri = data.entities?.urls?[0]
 
     if not location and coords = data.place?.bounding_box?.coordinates[0]
       location = data.geo = coordinates: [
@@ -207,7 +208,7 @@ twit.stream "user", (stream) ->
 
     if data.event is "follow" then onFollow data
 
-    else if mention and location and url then onEntry data
+    else if mention and location and uri then onEntry data
 
 handlers = [
   # get front page

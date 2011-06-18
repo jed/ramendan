@@ -234,6 +234,9 @@
         });
       } else {
         return getDay(entry.lat, entry.lng, function(err, day) {
+          if (err) {
+            return console.log("could not get valid day");
+          }
           entry.uri = "" + user.uri + "/entries/" + day;
           if (day < 20110731 || day > 20110829) {
             entry.invalid = "notRamendan";
@@ -289,10 +292,10 @@
   };
   twit.stream("user", function(stream) {
     return stream.on("data", function(data) {
-      var coords, location, mention, _ref, _ref2, _ref3, _ref4, _ref5;
+      var coords, location, mention, uri, _ref, _ref2, _ref3, _ref4, _ref5;
       mention = data.in_reply_to_user_id === TWITTER_ID;
       location = (_ref = data.geo) != null ? _ref.coordinates : void 0;
-      url = (_ref2 = data.entities) != null ? (_ref3 = _ref2.urls) != null ? _ref3[0] : void 0 : void 0;
+      uri = (_ref2 = data.entities) != null ? (_ref3 = _ref2.urls) != null ? _ref3[0] : void 0 : void 0;
       if (!location && (coords = (_ref4 = data.place) != null ? (_ref5 = _ref4.bounding_box) != null ? _ref5.coordinates[0] : void 0 : void 0)) {
         location = data.geo = {
           coordinates: [(coords[0][1] + coords[2][1]) / 2, (coords[0][0] + coords[2][0]) / 2]
@@ -300,7 +303,7 @@
       }
       if (data.event === "follow") {
         return onFollow(data);
-      } else if (mention && location && url) {
+      } else if (mention && location && uri) {
         return onEntry(data);
       }
     });
