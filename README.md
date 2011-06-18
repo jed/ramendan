@@ -1,8 +1,6 @@
 ramendan
 ========
 
-hallelujah, it's raining 麺: a jed/mitcho collaboration.
-
 pages
 -----
 
@@ -45,9 +43,16 @@ rules
 scoring
 -------
 
-- 1 point for each valid entry
-- devotion ranking from infidel (0) to prophet (31)
-- mention @ramendan for disciple badge
+- 1 point for each valid entry, up to 30
+
+- 2 point for following (worship)
+- 2 point for practice (duty)
+- 2 point for #rAmen (reverence)
+- 2 point for @mention (invocation)
+- 2 point for RT (evangelism)
+- 2 point for never missing a day (discipline)
+
+- devotion ranking from infidel (0) to prophet (42)
 
 implementation
 --------------
@@ -55,4 +60,3 @@ implementation
 - use 140byt.es template, jsonp, and router if possible
 - write duplicate templates in japanese and english
 - server in coffeescript on node.js, redis for db
-- run on heroku (?)
