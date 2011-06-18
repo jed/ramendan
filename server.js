@@ -247,9 +247,6 @@
         });
       } else {
         return getDay(entry.lat, entry.lng, function(err, day) {
-          if (err) {
-            return console.log("could not get valid day");
-          }
           entry.uri = "" + user.uri + "/entries/" + day;
           if (day < 20110731 || day > 20110829) {
             entry.invalid = "notRamendan";

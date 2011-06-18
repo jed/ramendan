@@ -160,7 +160,6 @@ onEntry = (data) ->
     )
 
     else getDay entry.lat, entry.lng, (err, day) ->
-      if err then return console.log "could not get valid day"
       entry.uri = "#{user.uri}/entries/#{day}"
       entry.invalid = "notRamendan" if day < 20110731 or day > 20110829
       entry.invalid ||= err if err
