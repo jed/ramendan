@@ -140,10 +140,7 @@
            /^\/followers\/(\w+)$/,
            function(capture) {
              jsonp( "http://ramendan.com/api/users/" + capture[1] + "?callback=", function( data ) {
-               jsonp( "http://ramendan.com/api/users/" + capture[1] + "/entries?callback=", function( entries ) {
-                 data.entries = entries
-                 write( document, templates.layout( templates.user( data ) ) )
-               })
+               write( document, templates.layout( templates.user( data ) ) )
              })
            },
            

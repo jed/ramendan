@@ -1,5 +1,5 @@
 (function() {
-  var EMBEDLY, Entry, PORT, TWITTER_ID, TWITTER_KEY, TWITTER_SECRET, TWITTER_TOKEN, TWITTER_TOKEN_SECRET, User, db, embedly, file, getDay, getPhoto, handlers, http, onEntry, onEvent, onFollow, redis, server, static, twit, twitter, url;
+  var EMBEDLY, Entry, PORT, TWITTER_ID, TWITTER_KEY, TWITTER_SECRET, TWITTER_TOKEN, TWITTER_TOKEN_SECRET, User, db, embedly, file, getDay, getPhoto, handlers, http, onEntry, onFollow, redis, server, static, twit, twitter, url;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   http = require("http");
   url = require("url");
@@ -229,9 +229,7 @@
     _ref2 = data.geo.coordinates, entry.lat = _ref2[0], entry.lng = _ref2[1];
     return user.read(function(err) {
       if (err) {
-        return oa.post("http://api.twitter.com/1/statuses/update.json", TWITTER_TOKEN, TWITTER_TOKEN_SECRET, {
-          status: "@" + user.handle + " Sorry, but you're not a true follower yet. Follow @ramendan and try again."
-        }, function(err, data) {
+        return twit.updateStatus("@" + user.handle + " Sorry, but you're not a true follower yet. Follow @ramendan and try again.", function(err, data) {
           return console.log(err || ("got entry from non-follower: " + user.handle + "."));
         });
       } else {
@@ -289,17 +287,23 @@
           */
     });
   };
-  onEvent = function(data) {
-    var _ref;
-    if (data.event === "follow") {
-      return onFollow(data);
-    }
-    if (data.in_reply_to_user_id === TWITTER_ID && data.geo && ((_ref = data.entities) != null ? _ref.urls.length : void 0)) {
-      return onEntry(data);
-    }
-  };
   twit.stream("user", function(stream) {
-    return stream.on("data", onEvent);
+    return stream.on("data", function(data) {
+      var coords, location, mention, _ref, _ref2, _ref3, _ref4, _ref5;
+      mention = data.in_reply_to_user_id === TWITTER_ID;
+      location = (_ref = data.geo) != null ? _ref.coordinates : void 0;
+      url = (_ref2 = data.entities) != null ? (_ref3 = _ref2.urls) != null ? _ref3[0] : void 0 : void 0;
+      if (!location && (coords = (_ref4 = data.place) != null ? (_ref5 = _ref4.bounding_box) != null ? _ref5.coordinates[0] : void 0 : void 0)) {
+        location = data.geo = {
+          coordinates: [(coords[0][1] + coords[2][1]) / 2, (coords[0][0] + coords[2][0]) / 2]
+        };
+      }
+      if (data.event === "follow") {
+        return onFollow(data);
+      } else if (mention && location && url) {
+        return onEntry(data);
+      }
+    });
   });
   handlers = [
     /^\/api$/, function(req, cb) {

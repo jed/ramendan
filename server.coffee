@@ -146,13 +146,9 @@ onEntry = (data) ->
   [entry.lat, entry.lng] = data.geo.coordinates
 
   user.read (err) ->
-    if err then return oa.post(
-      "http://api.twitter.com/1/statuses/update.json"
-      TWITTER_TOKEN
-      TWITTER_TOKEN_SECRET
-      status: "@#{user.handle} Sorry, but you're not a true follower yet. Follow @ramendan and try again."
-      (err, data) ->
-        console.log err or "got entry from non-follower: #{user.handle}."
+    if err then twit.updateStatus(
+      "@#{user.handle} Sorry, but you're not a true follower yet. Follow @ramendan and try again."
+      (err, data) -> console.log err or "got entry from non-follower: #{user.handle}."
     )
 
     else getDay entry.lat, entry.lng, (err, day) ->
@@ -197,15 +193,21 @@ onFollow = (data) ->
     )
     ###
 
-onEvent = (data) ->
-  return onFollow data if data.event is "follow"
- 
-  if data.in_reply_to_user_id is TWITTER_ID and
-    data.geo and
-    data.entities?.urls.length then onEntry data
-
 twit.stream "user", (stream) ->
-  stream.on "data", onEvent
+  stream.on "data", (data) ->
+    mention = data.in_reply_to_user_id is TWITTER_ID
+    location = data.geo?.coordinates
+    url = data.entities?.urls?[0]
+
+    if not location and coords = data.place?.bounding_box?.coordinates[0]
+      location = data.geo = coordinates: [
+        (coords[0][1] + coords[2][1]) / 2
+        (coords[0][0] + coords[2][0]) / 2
+      ]
+
+    if data.event is "follow" then onFollow data
+
+    else if mention and location and url then onEntry data
 
 handlers = [
   # get front page
