@@ -262,7 +262,7 @@
       img: data.source.profile_image_url,
       blurb: data.source.description,
       lang: data.source.lang,
-      since: data.source.created_at
+      since: new Date
     });
     return user.save(function(err, user) {
       if (err) {
@@ -346,6 +346,10 @@
           return res.end(body);
         });
       }
+    }
+    index = process.env.JOYENT ? "teaser" : "index";
+    if (!~path.indexOf(".")) {
+      req.url = "/" + index + ".html";
     }
     return file.serve(req, res);
   });

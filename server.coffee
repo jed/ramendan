@@ -171,7 +171,7 @@ onFollow = (data) ->
     img:    data.source.profile_image_url
     blurb:  data.source.description
     lang:   data.source.lang
-    since:  data.source.created_at
+    since:  new Date
 
   user.save (err, user) ->
     return if err
@@ -250,7 +250,9 @@ server = http.createServer (req, res) ->
           "Content-Type":   "text/javascript"
 
         res.end body
-
+  
+  index = if process.env.JOYENT then "teaser" else "index"
+  req.url = "/#{index}.html" unless ~path.indexOf "."
   file.serve req, res
   
 server.listen PORT, ->
