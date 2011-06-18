@@ -170,8 +170,8 @@ onEntry = (data) ->
         entry.height = data.height
         entry.width = data.width
         entry.thumb = data.thumbnail_url
-        entry.thumbWidth = data.thumbnail_height
-        entry.thumbHeight = data.thumbnail_width
+        entry.thumbWidth = data.thumbnail_width
+        entry.thumbHeight = data.thumbnail_height
         
         entry.save (err, entry) ->
           console.log "new entry: #{entry.uri} - #{entry.invalid or 'valid'}"
@@ -190,15 +190,10 @@ onFollow = (data) ->
     return if err
 
     console.log "new user: #{user.handle}"
-    
     ###
-    oa.post(
-      "http://api.twitter.com/1/statuses/update.json"
-      TWITTER_TOKEN
-      TWITTER_TOKEN_SECRET
-      status: "@#{user.handle} Your #ramendan calendar is ready! http://ramendan.com/#{user.handle}"
-      (err, data) ->
-        console.log err or "confirmation sent to #{user.handle}."
+    twit.updateStatus(
+      "@#{user.handle} Your #ramendan calendar is ready! http://ramendan.com/#{user.handle}"
+      (err, data) -> console.log err or "confirmation sent to #{user.handle}."
     )
     ###
 
