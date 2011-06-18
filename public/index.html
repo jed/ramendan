@@ -191,18 +191,18 @@
          route([
            /^\/$/,
            function() {
-             jsonp( "http://ramendan.com/api?callback=", function( data ) {
+             jsonp( "http://ramendan.com/api?callback=", function( body ) {
                write( document, templates.layout(
-                 templates.latestUsers( data.users ) +
-                 templates.latestEntries( data.entries )
+                 templates.latestUsers( body.data.users ) +
+                 templates.latestEntries( body.data.entries )
                ))
              })
            },
 
            /^\/followers\/(\w+)$/,
            function(capture) {
-             jsonp( "http://ramendan.com/api/users/" + capture[1] + "?callback=", function( data ) {
-               write( document, templates.layout( templates.user( data ) ) )
+             jsonp( "http://ramendan.com/api/users/" + capture[1] + "?callback=", function( body ) {
+               write( document, templates.layout( templates.user( body.data ) ) )
              })
            },
            
