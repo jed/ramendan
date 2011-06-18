@@ -1,10 +1,8 @@
 <html>
   <head>
     <title>ramendan</title>
-<!-- 
     <script type="text/javascript" src="http://use.typekit.com/oqd2vvf.js"></script>
     <script type="text/javascript">try{Typekit.load()}catch(e){}</script>
- -->
 
     <script type="text/template" id="layout">
       <html>
@@ -57,6 +55,40 @@
     </script>    
 
     <script type="text/template" id="user">
+      <script src="http://widgets.twimg.com/j/2/widget.js"></scr#{''}ipt>
+      <script>
+      new TWTR.Widget({
+        version: 2,
+        type: 'search',
+        search: 'from:#{this.handle} ramendan',
+        interval: 6000,
+        title: '',
+        subject: 'Recent offerings:',
+        width: 250,
+        height: 300,
+        theme: {
+          shell: {
+            background: '#000000',
+            color: '#ffffff'
+          },
+          tweets: {
+            background: '#000000',
+            color: '#ffffff',
+            links: '#ffffff'
+          }
+        },
+        features: {
+          scrollbar: true,
+          loop: false,
+          live: false,
+          hashtags: true,
+          timestamp: true,
+          avatars: false,
+          toptweets: false,
+          behavior: 'all'
+        }
+      }).render().start();
+      </scr#{''}ipt>
       <div>
         <div><img src="#{this.img}"></div>
         <div>name: #{this.name}</div>

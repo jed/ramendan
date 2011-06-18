@@ -1,5 +1,5 @@
 (function() {
-  var EMBEDLY, Entry, PORT, TWITTER_ID, TWITTER_KEY, TWITTER_SECRET, TWITTER_TOKEN, TWITTER_TOKEN_SECRET, User, db, embedly, file, getDay, getPhotoUrl, handlers, http, onEntry, onEvent, onFollow, redis, server, static, twit, twitter, url;
+  var EMBEDLY, Entry, PORT, TWITTER_ID, TWITTER_KEY, TWITTER_SECRET, TWITTER_TOKEN, TWITTER_TOKEN_SECRET, User, db, embedly, file, getDay, getPhoto, handlers, http, onEntry, onEvent, onFollow, redis, server, static, twit, twitter, url;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   http = require("http");
   url = require("url");
@@ -74,21 +74,24 @@
         }
       }, this));
     };
-    User.prototype.readEntries = function(cb) {
-      return db.smembers("" + this.uri + "/entries", function(err, list) {
-        var i, run;
-        i = list.length;
-        return (run = function() {
-          if (!i--) {
-            return cb(null, list);
-          }
-          return (new Entry({
-            uri: list[i]
-          })).read(function(err, entry) {
-            list[i] = entry;
-            return run();
-          });
-        })();
+    User.prototype.readWithEntries = function(cb) {
+      return this.read(function(err, user) {
+        return db.smembers("" + user.uri + "/entries", function(err, list) {
+          var i, run;
+          i = list.length;
+          user.entries = list;
+          return (run = function() {
+            if (!i--) {
+              return cb(null, user);
+            }
+            return (new Entry({
+              uri: list[i]
+            })).read(function(err, entry) {
+              list[i] = entry;
+              return run();
+            });
+          })();
+        });
       });
     };
     User.prototype.save = function(cb) {
@@ -168,7 +171,7 @@
     };
     return Entry;
   })();
-  getPhotoUrl = function(url, cb) {
+  getPhoto = function(url, cb) {
     var req;
     req = embedly.oembed({
       url: url
@@ -177,7 +180,7 @@
       var obj;
       obj = _arg[0];
       if ((obj != null ? obj.type : void 0) === "photo") {
-        return cb(null, obj.url);
+        return cb(null, obj);
       } else {
         return cb("notPhoto");
       }
@@ -227,7 +230,7 @@
     return user.read(function(err) {
       if (err) {
         return oa.post("http://api.twitter.com/1/statuses/update.json", TWITTER_TOKEN, TWITTER_TOKEN_SECRET, {
-          status: "@" + user.handle + " Sorry, you need to be a @ramendan follower to play. Try again."
+          status: "@" + user.handle + " Sorry, but you're not a true follower yet. Follow @ramendan and try again."
         }, function(err, data) {
           return console.log(err || ("got entry from non-follower: " + user.handle + "."));
         });
@@ -240,11 +243,16 @@
           if (err) {
             entry.invalid || (entry.invalid = err);
           }
-          return getPhotoUrl(entry.url, function(err, url) {
+          return getPhoto(entry.url, function(err, data) {
             if (err) {
               entry.invalid || (entry.invalid = err);
             }
-            entry.img = url;
+            entry.img = data.url;
+            entry.height = data.height;
+            entry.width = data.width;
+            entry.thumb = data.thumbnail_url;
+            entry.thumbWidth = data.thumbnail_height;
+            entry.thumbHeight = data.thumbnail_width;
             return entry.save(function(err, entry) {
               return console.log("new entry: " + entry.uri + " - " + (entry.invalid || 'valid'));
             });
@@ -312,7 +320,7 @@
         }
         return (new User({
           uri: uri
-        })).read(cb);
+        })).readWithEntries(cb);
       });
     }, /^\/api\/users\/(\w+)\/entries$/, function(req, cb) {
       return db.hget("/handles", req.captures[1], function(err, uri) {

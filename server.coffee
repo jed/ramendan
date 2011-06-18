@@ -47,14 +47,16 @@ class User
         if err then cb message: err
         else cb null, new User props
 
-  readEntries: (cb) ->
-    db.smembers "#{@uri}/entries", (err, list) ->
-      i = list.length
-
-      do run = ->
-        return cb null, list unless i--
-        (new Entry uri: list[i]).read (err, entry) ->
-          list[i] = entry; run()
+  readWithEntries: (cb) ->
+    @read (err, user) ->
+      db.smembers "#{user.uri}/entries", (err, list) ->
+        i = list.length
+        user.entries = list
+  
+        do run = ->
+          return cb null, user unless i--
+          (new Entry uri: list[i]).read (err, entry) ->
+            list[i] = entry; run()
 
   save: (cb) ->
     op = db.multi()
@@ -97,12 +99,12 @@ class Entry
 
     op.exec (err) => cb err, @
 
-getPhotoUrl = (url, cb) ->
+getPhoto = (url, cb) ->
   req = embedly.oembed url: url
 
   req.on "complete", ([obj]) ->
     if obj?.type is "photo"
-	      cb null, obj.url
+	      cb null, obj
     else
       cb "notPhoto"
 
@@ -148,7 +150,7 @@ onEntry = (data) ->
       "http://api.twitter.com/1/statuses/update.json"
       TWITTER_TOKEN
       TWITTER_TOKEN_SECRET
-      status: "@#{user.handle} Sorry, you need to be a @ramendan follower to play. Try again."
+      status: "@#{user.handle} Sorry, but you're not a true follower yet. Follow @ramendan and try again."
       (err, data) ->
         console.log err or "got entry from non-follower: #{user.handle}."
     )
@@ -157,9 +159,15 @@ onEntry = (data) ->
       entry.uri = "#{user.uri}/entries/#{day}"
       entry.invalid = "notRamendan" if day < 20110731 or day > 20110829
       entry.invalid ||= err if err
-      getPhotoUrl entry.url, (err, url) ->
+      getPhoto entry.url, (err, data) ->
         entry.invalid ||= err if err
-        entry.img = url
+        entry.img = data.url
+        entry.height = data.height
+        entry.width = data.width
+        entry.thumb = data.thumbnail_url
+        entry.thumbWidth = data.thumbnail_height
+        entry.thumbHeight = data.thumbnail_width
+        
         entry.save (err, entry) ->
           console.log "new entry: #{entry.uri} - #{entry.invalid or 'valid'}"
 
@@ -217,7 +225,7 @@ handlers = [
     db.hget "/handles", req.captures[1], (err, uri) ->
       return cb 404 unless uri
 
-      (new User uri: uri).read cb
+      (new User uri: uri).readWithEntries cb
 
   # get entries for a user by screen name
   /^\/api\/users\/(\w+)\/entries$/
