@@ -260,7 +260,7 @@ server = http.createServer (req, res) ->
 
         res.end body
   
-  index = if process.env.JOYENT then "teaser" else "index"
+  index = if process.env.JOYENT then "teaser.#{lang}" else "index"
   req.url = "/#{index}.html" unless ~path.indexOf "."
   file.serve req, res
   

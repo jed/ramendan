@@ -364,7 +364,7 @@
         });
       }
     }
-    index = process.env.JOYENT ? "teaser" : "index";
+    index = process.env.JOYENT ? "teaser." + lang : "index";
     if (!~path.indexOf(".")) {
       req.url = "/" + index + ".html";
     }
