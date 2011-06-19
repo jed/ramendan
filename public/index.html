@@ -1,12 +1,60 @@
 <html>
   <head>
     <title>ramendan</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+<!-- 
     <script type="text/javascript" src="http://use.typekit.com/oqd2vvf.js"></script>
     <script type="text/javascript">try{Typekit.load()}catch(e){}</script>
+ -->
 
-    <script type="text/template" id="layout">
+    <script type="text/template" id="layout" lang="en">
       <html>
         <head>
+          <script type="text/javascript">
+          (function() {
+            if (window.__twitterIntentHandler) return;
+            var intentRegex = /twitter\.com(\:\d{2,4})?\/intent\/(\w+)/,
+                windowOptions = 'scrollbars=yes,resizable=yes,toolbar=no,location=yes',
+                width = 550,
+                height = 420,
+                winHeight = screen.height,
+                winWidth = screen.width;
+          
+            function handleIntent(e) {
+              e = e || window.event;
+              var target = e.target || e.srcElement,
+                  m, left, top;
+          
+              while (target && target.nodeName.toLowerCase() !== 'a') {
+                target = target.parentNode;
+              }
+          
+              if (target && target.nodeName.toLowerCase() === 'a' && target.href) {
+                m = target.href.match(intentRegex);
+                if (m) {
+                  left = Math.round((winWidth / 2) - (width / 2));
+                  top = 0;
+          
+                  if (winHeight > height) {
+                    top = Math.round((winHeight / 2) - (height / 2));
+                  }
+          
+                  window.open(target.href, 'intent', windowOptions + ',width=' + width +
+                                                     ',height=' + height + ',left=' + left + ',top=' + top);
+                  e.returnValue = false;
+                  e.preventDefault && e.preventDefault();
+                }
+              }
+            }
+          
+            if (document.addEventListener) {
+              document.addEventListener('click', handleIntent, false);
+            } else if (document.attachEvent) {
+              document.attachEvent('onclick', handleIntent);
+            }
+            window.__twitterIntentHandler = true;
+          }());
+          </scr#{''}ipt>
           <style>
             body {
               color: white;
@@ -18,36 +66,108 @@
           </style>
         </head>
         <body>
-          <div id="container">
-            <h1 class="tk-neuzon">Ramendan</h1>
-            #{this}
-          </div>
-        </body>  
+          <div id="container">#{this}</div>
+        </body>
+      </html>
+    </script>
+    
+    <script type="text/template" id="layout" lang="ja">
+      <html>
+        <head>
+          <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+          <script type="text/javascript">
+          (function() {
+            if (window.__twitterIntentHandler) return;
+            var intentRegex = /twitter\.com(\:\d{2,4})?\/intent\/(\w+)/,
+                windowOptions = 'scrollbars=yes,resizable=yes,toolbar=no,location=yes',
+                width = 550,
+                height = 420,
+                winHeight = screen.height,
+                winWidth = screen.width;
+          
+            function handleIntent(e) {
+              e = e || window.event;
+              var target = e.target || e.srcElement,
+                  m, left, top;
+          
+              while (target && target.nodeName.toLowerCase() !== 'a') {
+                target = target.parentNode;
+              }
+          
+              if (target && target.nodeName.toLowerCase() === 'a' && target.href) {
+                m = target.href.match(intentRegex);
+                if (m) {
+                  left = Math.round((winWidth / 2) - (width / 2));
+                  top = 0;
+          
+                  if (winHeight > height) {
+                    top = Math.round((winHeight / 2) - (height / 2));
+                  }
+          
+                  window.open(target.href, 'intent', windowOptions + ',width=' + width +
+                                                     ',height=' + height + ',left=' + left + ',top=' + top);
+                  e.returnValue = false;
+                  e.preventDefault && e.preventDefault();
+                }
+              }
+            }
+          
+            if (document.addEventListener) {
+              document.addEventListener('click', handleIntent, false);
+            } else if (document.attachEvent) {
+              document.attachEvent('onclick', handleIntent);
+            }
+            window.__twitterIntentHandler = true;
+          }());
+          </scr#{''}ipt>
+          <style>
+            body {
+              color: white;
+      
+              background: -moz-linear-gradient(center top, #CF2900 0%, #000 40%);
+              background: -webkit-gradient(linear, 0% 0%, 0% 40%, from(#CF2900), to(#000000));
+              background-color: #000;
+            } 
+          </style>
+        </head>
+        <body>
+          <div id="container">#{this}</div>
+        </body>
       </html>
     </script>
 
-    <script type="text/template" id="latestUsers">
+    <script type="text/template" id="index" lang="en">
+      <h1 class="tk-neuzon">Ramendan</h1>
+      #{templates.latestUsers(this.users)}
+      #{templates.latestEntries(this.entries)}
+    </script>
+
+    <script type="text/template" id="index" lang="ja">
+      <h1>ラーメンダン</h1>
+    </script>
+
+    <script type="text/template" id="latestUsers" lang="en">
       <p>Latest users:</p>
       <ul>
         #{this.map(templates.latestUser)}
       </ul>
     </script>
 
-    <script type="text/template" id="latestUser">
+    <script type="text/template" id="latestUser" lang="en">
       <li>
         <img src="#{this.img}">
         <a href="/followers/#{this.handle}">#{this.name}</a> (<a href="/followers/#{this.handle}">#{this.handle}</a>)
       </li>
     </script>    
 
-    <script type="text/template" id="latestEntries">
+    <script type="text/template" id="latestEntries" lang="en">
       <p>Latest entries:</p>
       <ul>
         #{this.map(templates.latestEntry)}
       </ul>
     </script>
 
-    <script type="text/template" id="latestEntry">
+    <script type="text/template" id="latestEntry" lang="en">
       <li>
         <img width="#{this.thumbWidth}"
              height="#{this.thumbHeight}" 
@@ -59,7 +179,7 @@
       </li>
     </script>    
 
-    <script type="text/template" id="user">
+    <script type="text/template" id="user" lang="en">
       <script src="http://widgets.twimg.com/j/2/widget.js"></scr#{''}ipt>
       <script>
       new TWTR.Widget({
@@ -173,7 +293,7 @@
        function(a,b,c){function e(d){d=location.pathname;if(d!=c){for(b=0,c=d;(d=a[b++])&&!(d=d.exec(c));b++);a[b](d)}};e();setInterval(e,b||99)}
        
        getTemplates =
-       function(a,b,c,d){for(a={},b=document.getElementsByTagName("script"),c=0;d=b[c++];/pt$/.test(d.type||"pt")||(a[d.id]=d.innerHTML));return a}
+       function(a,b,c,d,e){for(b=document.getElementsByTagName(c="script"),d=0;e=b[d++];)e.src||/ipt$/.test(e.type||c)||a.call(e,e.innerHTML,e.id)}
        
        map = 
        Array.prototype.map=[].map||function(a){for(var b,c=this,d=Array(b=c.length),e=0;e<b;)d[e]=e in c&&a.call(arguments[1],c[e],e++,c);return d}
@@ -181,37 +301,34 @@
        write =
        function(a,b,c){c=a.nodeType;c>8?a.close(a.open(),a.write(b)):a[[,"innerHTML","value"][c]||"nodeValue"]=b}
        
-       templates = getTemplates()
-       for (var name in templates) {
-         templates[name] = template(templates[name], {templates: templates} )
-       }
        
-       onload = function() {
+       templates = { en:{}, ja:{} }
+       getTemplates(function(val, name) {
+         templates[this.lang][name] = template(val, {templates: templates[this.lang]} )
+       })
        
-         route([
-           /^\/$/,
-           function() {
-             jsonp( "http://ramendan.com/api?callback=", function( body ) {
-               write( document, templates.layout(
-                 templates.latestUsers( body.data.users ) +
-                 templates.latestEntries( body.data.entries )
-               ))
-             })
-           },
+       route([
+         /^\/$/,
+         function() {
+           jsonp( "http://ramendan.com/api?callback=", function( body ) {
+             write( document, templates[body.lang].layout(
+               templates[body.lang].index( body.data )
+             ))
+           })
+         },
 
-           /^\/followers\/(\w+)$/,
-           function(capture) {
-             jsonp( "http://ramendan.com/api/users/" + capture[1] + "?callback=", function( body ) {
-               write( document, templates.layout( templates.user( body.data ) ) )
-             })
-           },
-           
-           /* 404 */,
-           function() {
-             write( document, templates.layout("404") )
-           }
-         ])
-       }
+         /^\/followers\/(\w+)$/,
+         function(capture) {
+           jsonp( "http://ramendan.com/api/users/" + capture[1] + "?callback=", function( body ) {
+             write( document, templates[body.lang].layout( templates[body.lang].user( body.data ) ) )
+           })
+         },
+         
+         /* 404 */,
+         function() {
+           write( document, templates.layout("404") )
+         }
+       ])
 
     </script>
   </body>
