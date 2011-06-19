@@ -310,7 +310,7 @@
        route([
          /^\/$/,
          function() {
-           jsonp( "http://ramendan.com/api?callback=", function( body ) {
+           jsonp( "/api?callback=", function( body ) {
              write( document, templates[body.lang].layout(
                templates[body.lang].index( body.data )
              ))
@@ -319,7 +319,7 @@
 
          /^\/followers\/(\w+)$/,
          function(capture) {
-           jsonp( "http://ramendan.com/api/users/" + capture[1] + "?callback=", function( body ) {
+           jsonp( "/api/users/" + capture[1] + "?callback=", function( body ) {
              write( document, templates[body.lang].layout( templates[body.lang].user( body.data ) ) )
            })
          },

@@ -4,7 +4,7 @@ url     = require "url"
 static  = require "node-static"
 file = new static.Server "./public"
 
-PORT = process.env.PORT or 8000
+PORT = process.env.PORT
 
 {User, Entry} = require "./models"
 
