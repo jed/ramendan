@@ -6,7 +6,6 @@ file = new static.Server "./public"
 
 PORT = process.env.PORT or 5000
 
-db = require "./db"
 {User, Entry} = require "./models"
 
 handlers = [
