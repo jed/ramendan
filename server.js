@@ -1,1 +1,2 @@
-require("./lib/server")
+require("./lib/worker")
+require("./lib/web")

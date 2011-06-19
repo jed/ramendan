@@ -1,7 +1,3 @@
-http    = require "http"
-url     = require "url"
-
-PORT                 = process.env.PORT or 5000
 TWITTER_TOKEN        = '315955679-zp64SIsgXwlW28qDEDt69APrql7u0AJFJFthJXoS'
 TWITTER_TOKEN_SECRET = '4BYQzGuK3dd5tNbo8orWwiFS9f7dZOATvz8MrLnrQ'
 TWITTER_KEY          = 'tcrzlUrmOHd6idGBYC4KTA'
@@ -12,7 +8,7 @@ TWITTER_ID           = 315955679
 static  = require "node-static"
 redis   = require "redis"
 embedly = require "embedly"
-twitter = require "twitter"
+Twitter = require "twitter"
 
 db = require "./db"
 {User, Entry} = require "./models"
@@ -21,7 +17,7 @@ file = new static.Server "./public"
 
 embedly = new embedly.Api key: EMBEDLY
 
-twit = new twitter
+twit = new Twitter
   consumer_key:        TWITTER_KEY
   consumer_secret:     TWITTER_SECRET
   access_token_key:    TWITTER_TOKEN
@@ -131,58 +127,3 @@ twit.stream "user", (stream) ->
     if data.event is "follow" then onFollow data
 
     else if mention and location and uri then onEntry data
-
-handlers = [
-  # get front page
-  /^\/api$/
-  (req, cb) ->
-    Entry.latest (err, entries) -> User.latest (err, users) ->
-      cb null, entries: entries, users: users
-
-  # get latest users
-  /^\/api\/users\/latest$/
-  (req, cb) ->
-    User.latest cb
-
-  # get a user by screen name
-  /^\/api\/users\/(\w+)$/
-  (req, cb) ->
-    db.hget "/handles", req.captures[1], (err, uri) ->
-      return cb 404 unless uri
-
-      (new User uri: uri).readWithEntries cb
-
-  # get latest entries
-  /^\/api\/entries\/latest$/
-  (req, cb) ->
-    Entry.latest cb
-]
-
-server = http.createServer (req, res) ->
-  uri = url.parse req.url, true
-  path = uri.pathname
-  lang = req.headers["accept-language"]?.toLowerCase().match(/en|ja/g)?[0] or "en"
-  index = 0
-
-  while pattern = handlers[index++]
-    handler = handlers[index++]
-
-    if req.captures = path.match pattern
-      return handler req, (err, data) ->
-        body = data: data, lang: lang
-
-        callback = uri.query.callback?.match(/^\w+$/)?[0]
-        body = "#{callback or 'alert'}(#{JSON.stringify body})"
-
-        res.writeHead 200,
-          "Content-Length": Buffer.byteLength body
-          "Content-Type":   "text/javascript"
-
-        res.end body
-  
-  index = if process.env.JOYENT then "teaser.#{lang}" else "index"
-  req.url = "/#{index}.html" unless ~path.indexOf "."
-  file.serve req, res
-  
-server.listen PORT, ->
-  console.log "ramendan running on port #{PORT}"

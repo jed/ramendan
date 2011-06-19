@@ -80,3 +80,9 @@ exports.Entry = class Entry
     op.hmset @uri, @
 
     op.exec (err) => cb err, @
+
+exports.Tweet = class Tweet
+  constructor: (attrs) ->
+    @[key] = value for key, value of attrs
+
+    console.log @

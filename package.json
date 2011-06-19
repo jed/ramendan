@@ -1,0 +1,10 @@
+{
+  "name":        "ramendan",
+  "version:      "0.0.1",
+  "dependencies": {
+    "twitter":    "",
+    "node-static: "",
+    "redis":      "",
+    "embedly":    ""
+  }
+}
