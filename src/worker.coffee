@@ -1,4 +1,9 @@
+http = require "http"
+
 {Twitter, User, Entry} = require "./models"
+
+embedly = require "embedly"
+embedly = new embedly.Api key: 'daf28dd296b811e0bc3c4040d3dc5c07'
 
 getPhoto = (url, cb) ->
   req = embedly.oembed url: url
@@ -46,36 +51,31 @@ onEntry = (data) ->
 
   [entry.lat, entry.lng] = data.geo.coordinates
 
-  user.read (err) ->
-    if err then twitter.tweet(
-      "@#{user.handle} Sorry, but you're not a true follower yet. Follow @ramendan and try again."
-      (err, data) -> console.log err or "got entry from non-follower: #{user.handle}."
-    )
-
-    else getDay entry.lat, entry.lng, (err, day) ->
-      entry.uri = "#{user.uri}/entries/#{day}"
-      entry.invalid = "notRamendan" if day < 20110731 or day > 20110829
+  getDay entry.lat, entry.lng, (err, day) ->
+    entry.uri = "#{user.uri}/entries/#{day}"
+    entry.invalid = "beforeRamendan" if day < 20110731
+    entry.invalid ||= "afterRamendan" if day > 20110829
+    entry.invalid ||= err if err
+    getPhoto entry.url, (err, data) ->
       entry.invalid ||= err if err
-      getPhoto entry.url, (err, data) ->
-        entry.invalid ||= err if err
-        entry.img = data.url
-        entry.height = data.height
-        entry.width = data.width
-        entry.thumb = data.thumbnail_url
-        entry.thumbWidth = data.thumbnail_width
-        entry.thumbHeight = data.thumbnail_height
+      entry.img = data.url
+      entry.height = data.height
+      entry.width = data.width
+      entry.thumb = data.thumbnail_url
+      entry.thumbWidth = data.thumbnail_width
+      entry.thumbHeight = data.thumbnail_height
         
-        entry.save (err, entry) ->
-          console.log "new entry: #{entry.uri} - #{entry.invalid or 'valid'}"
+      entry.save (err, entry) ->
+        console.log "new entry: #{entry.uri} - #{entry.invalid or 'valid'}"
 
 onFollow = (data) ->
   user = new User
-    uri:    "/users/#{data.source.id_str}"
-    handle: data.source.screen_name.toLowerCase()
-    name:   data.source.name
-    img:    data.source.profile_image_url
-    blurb:  data.source.description
-    lang:   data.source.lang
+    uri:    "/users/#{data.id_str}"
+    handle: data.screen_name.toLowerCase()
+    name:   data.name
+    img:    data.profile_image_url
+    blurb:  data.description
+    lang:   data.lang
     since:  new Date
 
   user.save (err, user) ->
@@ -89,6 +89,18 @@ onFollow = (data) ->
     )
     ###
 
+onHashtag = (data) ->
+  user.attr "hashtag", data.id
+
+onMention = (data) ->
+  user.attr "mention", data.id
+
+onReTweet = (data) ->
+  user.attr "retweet", data.id
+
+onPractice = (data) ->
+  user.attr "practice", data.id
+
 twitter = new Twitter
   consumer:
     key: "tcrzlUrmOHd6idGBYC4KTA"
@@ -98,17 +110,40 @@ twitter = new Twitter
     secret: "4BYQzGuK3dd5tNbo8orWwiFS9f7dZOATvz8MrLnrQ"
 
 twitter.listen (data) ->
-  console.log data
-  isReply = data.in_reply_to_screen_name is "ramendan"
-  location = data.geo?.coordinates
-  uri = data.entities?.urls?[0]
+  console.log data, data.entities?.user_mentions
 
-  if not location and coords = data.place?.bounding_box?.coordinates[0]
-    location = data.geo = coordinates: [
+  return onFollow data.source if data.event is "follow"
+
+  (new User uri: "/users/#{data.user.id_str}").read (err, user) ->
+    return if err
+
+    return onEntry data if data.geo and
+      data.in_reply_to_screen_name is "ramendan" and
+      data.entities?.urls.length
+
+    return onMention data if /#rAmen\.$/.test data.text
+
+  isHashtag =
+      
+
+  isMention =
+    not data.in_reply_to_screen_name and
+    data.entities?.user_mentions?.some (x) -> x.screen_name is "ramendan"
+
+  isRetweet =
+    data.retweeted_status?.user.screen_name is "ramendan"
+
+  #weed out all non-followers
+
+  else if isReply and data.geo and uri then onEntry data
+
+  else if /#ramen\.$/.test data.text then onHashtag data
+
+  else if not data.in_reply_to_screen_name and data.entities?.user_mentions?.some then onMention data
+
+estimateLocation = (data) ->
+  if not data.geo?.coordinates and coords = data.place?.bounding_box?.coordinates[0]
+    data.geo = coordinates: [
       (coords[0][1] + coords[2][1]) / 2
       (coords[0][0] + coords[2][0]) / 2
     ]
-
-  if data.event is "follow" then onFollow data
-
-  else if isReply and location and uri then onEntry data

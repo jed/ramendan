@@ -25,13 +25,6 @@ pages
 
 rules
 -----
-
-- follow @ramendan to play
-- each entry must be a tweet:
-  - with a valid geotag
-  - with an image of noodles
-  - mentioning @ramendan
-  - between sunset and sunrise in the geotagged timezone
   
 - if a user has multiple tweets on the same day, only the last is used
 
@@ -43,20 +36,22 @@ rules
 scoring
 -------
 
-- 1 point for each valid entry, up to 30
+- 3 points for each night of observance from july 31 to aug 29
+  => reply to @ramendan between sunset and sunrise with a geotag and a picture of ramen
 
-- 2 point for following (worship)
-- 2 point for practice (duty)
-- 2 point for #rAmen (reverence)
-- 2 point for @mention (invocation)
-- 2 point for RT (evangelism)
-- 2 point for never missing a day (discipline)
+- 2 points for preparation
+  => send a valid observance tweet before ramendan starts
+  
+- 2 points for reverence
+  => end a tweet with "#rAmen."
 
-- devotion ranking from infidel (0) to prophet (42)
+- 2 points for invocation
+  => mention @ramendan
 
-implementation
---------------
+- 2 points for evangelism
+  => native retweet a @ramendan tweet
 
-- use 140byt.es template, jsonp, and router if possible
-- write duplicate templates in japanese and english
-- server in coffeescript on node.js, redis for db
+- 2 points for discipline
+  => observe all 30 nights of ramendan
+
+- devotion ranking from infidel (0) to prophet (100)

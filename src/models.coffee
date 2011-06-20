@@ -1,9 +1,6 @@
 db      = require "./db"
 {OAuth} = require "oauth"
 
-embedly = require "embedly"
-embedly = new embedly.Api key: 'daf28dd296b811e0bc3c4040d3dc5c07'
-
 exports.User = class User
   @latest: (cb) ->
     db.zrevrange "/users", 0, 19, (err, list) ->
@@ -35,6 +32,27 @@ exports.User = class User
           return cb null, user unless i--
           (new Entry uri: list[i]).read (err, entry) ->
             list[i] = entry; run()
+
+  attr: -> db.hset @uri, arguments...
+
+  score: (cb) ->
+    score = 0
+
+    op = db.multi()
+
+    op.scard "#{@uri}/entries", (err, num) ->
+      score += num or 0
+      score += 2 * (num is 30)
+
+    op.hgetall @uri, (err, props) ->
+      total = !!props.practice +
+              !!props.mention +
+              !!props.retweet +
+              !!props.hashtag
+
+      score += total * 2
+
+    op.exec (err) -> cb err, score
 
   save: (cb) ->
     op = db.multi()
@@ -70,7 +88,8 @@ exports.Twitter = class Twitter
     
   listen: (cb) ->
     request = @oa.get(
-      "https://userstream.twitter.com/2/user.json"
+      "https://userstream.twitter.com/2/user.json?track=%23rAmen."
+      #"https://userstream.twitter.com/2/user.json"
       @token.key
       @token.secret
     )
@@ -106,7 +125,7 @@ exports.Entry = class Entry
 
   read: (cb) ->
     db.exists @uri, (err, exists) =>
-      if err t<S-D-F1>hen cb message: err
+      if err then cb message: err
       else if not exists then cb status: 404, message: "Not found."
       else db.hgetall @uri, (err, props) ->
         if err then cb message: err
