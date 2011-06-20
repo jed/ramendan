@@ -44,6 +44,7 @@ onEntry = (data) ->
 
   entry = new Entry
     user: user.uri
+    id:   data.id
     url:  data.entities?.urls[0].url
     time: data.created_at
     text: data.text.slice 10
@@ -53,11 +54,18 @@ onEntry = (data) ->
 
   getDay entry.lat, entry.lng, (err, day) ->
     entry.uri = "#{user.uri}/entries/#{day}"
-    entry.invalid = "beforeRamendan" if day < 20110731
-    entry.invalid ||= "afterRamendan" if day > 20110829
-    entry.invalid ||= err if err
+
+    if day > 20110829
+      return
+
+    if day < 20110731
+      console.log "new practice from #{user.handle}"
+      return user.attr "practice", data.id
+
+    if err
+      return console.log "non-dusk entry from #{user.handle}"
+
     getPhoto entry.url, (err, data) ->
-      entry.invalid ||= err if err
       entry.img = data.url
       entry.height = data.height
       entry.width = data.width
@@ -89,18 +97,6 @@ onFollow = (data) ->
     )
     ###
 
-onHashtag = (data) ->
-  user.attr "hashtag", data.id
-
-onMention = (data) ->
-  user.attr "mention", data.id
-
-onReTweet = (data) ->
-  user.attr "retweet", data.id
-
-onPractice = (data) ->
-  user.attr "practice", data.id
-
 twitter = new Twitter
   consumer:
     key: "tcrzlUrmOHd6idGBYC4KTA"
@@ -110,36 +106,40 @@ twitter = new Twitter
     secret: "4BYQzGuK3dd5tNbo8orWwiFS9f7dZOATvz8MrLnrQ"
 
 twitter.listen (data) ->
-  console.log data, data.entities?.user_mentions
+  isFollow = data.event is "follow"
 
-  return onFollow data.source if data.event is "follow"
+  if isFollow
+    return onFollow data.source
 
   (new User uri: "/users/#{data.user.id_str}").read (err, user) ->
     return if err
 
-    return onEntry data if data.geo and
+    isEntry = data.geo and
       data.in_reply_to_screen_name is "ramendan" and
       data.entities?.urls.length
 
-    return onMention data if /#rAmen\.$/.test data.text
+    if isEntry
+      console.log "new entry from #{user.handle}"
+      return onEntry data
 
-  isHashtag =
-      
+    isMention = not data.in_reply_to_screen_name and
+      data.entities?.user_mentions?.some (x) -> x.screen_name is "ramendan"
 
-  isMention =
-    not data.in_reply_to_screen_name and
-    data.entities?.user_mentions?.some (x) -> x.screen_name is "ramendan"
+    if isMention and not user.mention
+      console.log "new mention from #{user.handle}"
+      return user.attr "mention", data.id
 
-  isRetweet =
-    data.retweeted_status?.user.screen_name is "ramendan"
+    isHashtag = /#rAmen\.$/i.test data.text
 
-  #weed out all non-followers
+    if isHashtag and not user.hashtag
+      console.log "new hashtag from #{user.handle}"
+      return user.attr "hashtag", data.id
 
-  else if isReply and data.geo and uri then onEntry data
+    isRetweet = data.retweeted_status?.user.screen_name is "ramendan"
 
-  else if /#ramen\.$/.test data.text then onHashtag data
-
-  else if not data.in_reply_to_screen_name and data.entities?.user_mentions?.some then onMention data
+    if isRetweet and not user.retweet
+      console.log "new retweet from #{user.handle}"
+      return user.attr "retweet", data.id
 
 estimateLocation = (data) ->
   if not data.geo?.coordinates and coords = data.place?.bounding_box?.coordinates[0]

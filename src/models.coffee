@@ -52,6 +52,8 @@ exports.User = class User
 
       score += total * 2
 
+    op.hset @uri, "score", score
+
     op.exec (err) -> cb err, score
 
   save: (cb) ->
@@ -140,6 +142,8 @@ exports.Entry = class Entry
         cb err, entry
 
   save: (cb) ->
+    (new User uri: @user).score ->
+
     op = db.multi()
     op.sadd "#{@user}/entries", @uri
 
