@@ -33,28 +33,21 @@ exports.User = class User
           (new Entry uri: list[i]).read (err, entry) ->
             list[i] = entry; run()
 
-  attr: -> db.hset @uri, arguments...
+  attr: (key, val, cb) ->
+    db.hset @uri, key, val, cb or ->
 
-  score: (cb) ->
-    score = 0
+  updateScore: (cb) ->
+    db.scard "#{@uri}/entries", (err, num) =>
+      score = (num or 0) + 2 * (num is 30)
+      db.hgetall @uri, (err, props) =>
+        total = !!props.practice +
+                !!props.mention +
+                !!props.retweet +
+                !!props.hashtag
 
-    op = db.multi()
-
-    op.scard "#{@uri}/entries", (err, num) ->
-      score += num or 0
-      score += 2 * (num is 30)
-
-    op.hgetall @uri, (err, props) ->
-      total = !!props.practice +
-              !!props.mention +
-              !!props.retweet +
-              !!props.hashtag
-
-      score += total * 2
-
-    op.hset @uri, "score", score
-
-    op.exec (err) -> cb err, score
+        score += total * 2
+        
+        db.hset @uri, "score", score, cb or ->
 
   save: (cb) ->
     op = db.multi()
@@ -91,7 +84,6 @@ exports.Twitter = class Twitter
   listen: (cb) ->
     request = @oa.get(
       "https://userstream.twitter.com/2/user.json?track=%23rAmen."
-      #"https://userstream.twitter.com/2/user.json"
       @token.key
       @token.secret
     )
@@ -142,10 +134,14 @@ exports.Entry = class Entry
         cb err, entry
 
   save: (cb) ->
-    (new User uri: @user).score ->
+    (new User uri: @user).updateScore ->
 
     op = db.multi()
     op.sadd "#{@user}/entries", @uri
+    op.hmset @user, lat: @lat, lng: @lng
+
+    delete @lat
+    delete @lng
 
     op.lpush "/entries/latest", @uri
     op.ltrim "/entries/latest", 0, 19

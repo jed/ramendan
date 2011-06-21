@@ -82,9 +82,9 @@ onFollow = (data) ->
     handle: data.screen_name.toLowerCase()
     name:   data.name
     img:    data.profile_image_url
-    blurb:  data.description
     lang:   data.lang
     since:  new Date
+    score:  0
 
   user.save (err, user) ->
     return console.log err if err
@@ -122,24 +122,24 @@ twitter.listen (data) ->
       console.log "new entry from #{user.handle}"
       return onEntry data
 
+    isRetweet = data.retweeted_status?.user.screen_name is "ramendan"
+
+    if isRetweet and not user.retweet
+      console.log "new retweet from #{user.handle}"
+      return user.attr "retweet", data.id, -> user.updateScore()
+
     isMention = not data.in_reply_to_screen_name and
       data.entities?.user_mentions?.some (x) -> x.screen_name is "ramendan"
 
     if isMention and not user.mention
       console.log "new mention from #{user.handle}"
-      return user.attr "mention", data.id
+      return user.attr "mention", data.id, -> user.updateScore()
 
     isHashtag = /#rAmen\.$/i.test data.text
 
     if isHashtag and not user.hashtag
       console.log "new hashtag from #{user.handle}"
-      return user.attr "hashtag", data.id
-
-    isRetweet = data.retweeted_status?.user.screen_name is "ramendan"
-
-    if isRetweet and not user.retweet
-      console.log "new retweet from #{user.handle}"
-      return user.attr "retweet", data.id
+      return user.attr "hashtag", data.id, -> user.updateScore()
 
 estimateLocation = (data) ->
   if not data.geo?.coordinates and coords = data.place?.bounding_box?.coordinates[0]
