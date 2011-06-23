@@ -1,0 +1,241 @@
+/************************
+RESETS
+**********************/
+
+* {margin:0;padding:0;}
+body {line-height:1;}
+
+article,aside,canvas,details,figcaption,figure,
+footer,header,hgroup,menu,nav,section,summary { display:block;}
+strong, b {font-weight:bold;}
+nav ul { list-style:none;}
+
+a { border:0;
+    vertical-align:baseline;
+    background:transparent;
+    text-decoration:none;
+    font-weight:bold;
+    outline:0 none;
+    }
+    
+a:hover {color:#000;}
+
+ins {
+    background-color:#ff9;
+    color:#000;
+    text-decoration:none;
+    }
+
+mark {
+    background-color:#ff9;
+    color:#000;
+    font-style:italic;
+    font-weight:bold;
+    }
+
+del {text-decoration: line-through;}
+
+abbr[title], dfn[title] {
+    border-bottom:1px dotted #000;
+    cursor:help;
+    }
+
+table {border-collapse:collapse;border-spacing:0; width:100%;}
+
+input, select {vertical-align:middle;}
+select{border:1px solid #CCC;}
+
+img, fieldset {border:0;}
+
+li {list-style: none;}
+
+table {border-collapse: collapse;}
+td, th {vertical-align: top;}
+
+
+
+body {
+    background:#000;
+    font-family: Helvetica, Arial, Verdana,"ＭＳ Ｐゴシック","ＭＳ ゴシック",  "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "Osaka","MS PGothic", sans-serif;
+    line-height:150%;
+    color:#FFF;
+    background: -moz-linear-gradient(center top, #CF2900 0%, #000 40%);
+    background: -webkit-gradient(linear, 0% 0%, 0% 40%, from(#CF2900), to(#000000));
+    background-color:#000;    
+    font-size:18px;
+    }
+
+header a {color:#FFF;}
+
+/************************
+TOP
+**********************/
+.top-ttl {font-size:100px; color:#FFF; padding-bottom: 30px;}
+nav {
+	position:fixed;
+	top:-10px;
+	left:10px;
+	border:5px solid #FFF;
+	border-top:none;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+	width:150px;
+	}
+nav ul {padding:20px;}	
+nav ul li {text-align:center; padding-bottom: 10px;}
+
+
+.main-wrap {
+	padding:20px 0 0 180px;
+	width:700px;
+	text-align:center;
+	}
+
+
+/************************
+USER PAGE
+**********************/
+.wrap {width:950px; margin:0 auto; position:relative;}
+
+header {padding-bottom:30px;}
+
+#logo-box {
+	padding:15px 20px 10px 15px;
+	background: rgba(0, 0, 0, 0.5);
+	float:left;
+	border:5px solid #FFF;
+	border-top:none;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+	position:absolute;
+	top:-10px;
+	}
+	
+#logo-user {
+	background: url(/img/logo-trans-s.png) no-repeat 0 0;
+	font-size:22px;
+	line-height:100%;
+	padding:8px 0 5px 60px;
+	}
+#logo-user a:hover {color:#FFF;}
+	
+#logo-user span {
+	font-size:16px;
+	display:block;
+	}
+
+.user-stats {
+	float:right;
+	padding-top:20px;
+	}
+	
+.user-stats li {float:left;padding:0 20px;border-right:1px solid #FFF; line-height:110%; height:50px;}
+.user-stats li span {color:#000; opacity: 0.5; font-size:14px; display:block;}
+.user-stats .user-name {font-size:30px;}
+.user-stats .user-name .twitter-user-img {float:left; padding-right:10px;}
+.user-stats .user-name .twitter-user-img img {
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	}
+.user-stats .user-progress {border:none;}
+
+.badge-box {
+	padding:20px;
+	background: rgba(0, 0, 0, 0.3);
+	margin-bottom:30px;
+	}
+	
+.badge-box .badge-col {float:left; width:270px; padding-right:40px;}
+.badge-box .badge-col-last {padding-right:0;}
+.badge-ttl {display:block; padding-bottom:20px;}
+.badge-ttl-sub {font-size:14px; color:rgba(255, 255, 255, 0.5);}
+
+.badge-item {font-size:14px; line-height:120%; padding:0 0 15px 35px;}
+.badge-item strong, .badge-item p { color:rgba(255, 255, 255, 0.5);}
+
+.badge-preparation {background:url(/img/badge-locked.png) no-repeat 0 0;}
+.badge-invocation {background:url(/img/badge-locked.png) no-repeat 0 0;}
+.badge-evangelism {background:url(/img/badge-locked.png) no-repeat 0 0;}
+.badge-reverence {background:url(/img/badge-locked.png) no-repeat 0 0;}
+.badge-discipline {background:url(/img/badge-locked.png) no-repeat 0 0;}
+
+.badge-item.unlocked strong {color:rgba(255, 255, 255, 1);}
+.badge-preparation.unlocked {background:url(/img/badge.png) no-repeat 0 0;}
+.badge-invocation.unlocked {background:url(/img/badge.png) no-repeat 0 0;}
+.badge-evangelism.unlocked {background:url(/img/badge.png) no-repeat 0 0;}
+.badge-reverence.unlocked {background:url(/img/badge.png) no-repeat 0 0;}
+.badge-discipline.unlocked {background:url(/img/badge.png) no-repeat 0 0;}
+
+.calendar-box {padding-bottom:40px;}
+
+.weekday-names li {
+	padding:5px 2px 5px 2px;
+	width:131px;
+	float:left;
+	text-align:center;
+	}
+
+.day {height:133px; width:133px;
+	border-right:2px solid #000;
+	border-bottom:2px solid #000;
+	float:left; 
+	text-align:center;
+	position:relative;
+	}
+	
+.day.day-future {background:url(/img/day-future.jpg) no-repeat 0 0; 	color:#000;}
+.day.day-future strong {
+	display:block;
+	padding-top:50px;
+	font-size:30px;
+	}
+
+.day.day-future span {font-weight:bold; font-size:14px;}
+
+.day a {
+	display:block;
+	height:133px; width:133px;
+	overflow:hidden;
+	text-align:center;
+	}
+	
+
+.tweet {
+	background: #FFF;
+	width:280px;
+	display: block;
+	padding:10px;
+	border:4px solid #000;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+	position:absolute;
+	top:-100px;
+	left:-90px;
+	z-index:10;
+	line-height:120%;
+	vertical-align: middle;
+	position:relative;
+	}	
+
+.tweet-content {color:#000; font-weight:bold;}
+.speech-bubble {
+	display:block;
+	width:280px;
+	background: url(/img/bubble-btm.png) no-repeat 50% bottom;
+	position:absolute;
+	bottom:-20px;
+	}
+
+/************************
+CLEARS
+**********************/
+.cf:before, .cf:after {
+  content: "\0020"; display: block; height: 0; visibility: hidden;
+}
+
+.cf:after { clear: both; }
+.cf { zoom: 1; }

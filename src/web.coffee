@@ -1,38 +1,23 @@
 http    = require "http"
 url     = require "url"
-
+fs      = require "fs"
+_       = require "underscore"
 static  = require "node-static"
-file = new static.Server "./public"
 
 PORT = process.env.PORT
 
 {User, Entry} = require "./models"
 
-handlers = [
-  # get front page
-  /^\/api$/
-  (req, cb) ->
-    Entry.latest (err, entries) -> User.latest (err, users) ->
-      cb null, entries: entries, users: users
+file = new static.Server "./public"
 
-  # get latest users
-  /^\/api\/users\/latest$/
-  (req, cb) ->
-    User.latest cb
+templates =
+  en: {}
+  ja: {}
 
-  # get a user by screen name
-  /^\/api\/users\/(\w+)$/
-  (req, cb) ->
-    db.hget "/handles", req.captures[1], (err, uri) ->
-      return cb 404 unless uri
-
-      (new User uri: uri).readWithEntries cb
-
-  # get latest entries
-  /^\/api\/entries\/latest$/
-  (req, cb) ->
-    Entry.latest cb
-]
+for lang, obj of templates
+  for name in ["index", "layout", "user"]
+    contents = fs.readFileSync "./templates/#{name}.#{lang}.html", "utf8"
+    try obj[name] = _.template contents
 
 server = http.createServer (req, res) ->
   uri = url.parse req.url, true
@@ -40,24 +25,38 @@ server = http.createServer (req, res) ->
   lang = req.headers["accept-language"]?.toLowerCase().match(/en|ja/g)?[0] or "en"
   index = 0
 
+  handlers = [
+    # get front page
+    /^\/$/
+    (req, cb) ->
+      cb null, templates[lang].index {}
+
+    # get a user by screen name
+    /^\/users\/(\w+)$/
+    (req, cb) ->
+      User.fromHandle req.captures[1], (err, user) ->
+        if err then cb err
+
+        else user.readWithEntries (err, user) ->
+          cb null, templates[lang].user user
+  ]
+
   while pattern = handlers[index++]
     handler = handlers[index++]
 
     if req.captures = path.match pattern
-      return handler req, (err, data) ->
-        body = data: data, lang: lang
+      return handler req, (err, html) ->
+        if err then html = "404"
 
-        callback = uri.query.callback?.match(/^\w+$/)?[0]
-        body = "#{callback or 'alert'}(#{JSON.stringify body})"
+        html = templates[lang].layout body: html
 
         res.writeHead 200,
-          "Content-Length": Buffer.byteLength body
-          "Content-Type":   "text/javascript"
+          "Content-Length": Buffer.byteLength html
+          "Content-Type":   "text/html"
 
-        res.end body
+        res.end html
   
-  index = if "ramen" of uri.query then "index" else "teaser.#{lang}"
-  req.url = "/#{index}.html" unless ~path.indexOf "."
+  index = "teaser.#{lang}" if "ramen" of uri.query
   file.serve req, res
   
 server.listen PORT, ->

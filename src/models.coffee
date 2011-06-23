@@ -11,6 +11,10 @@ exports.User = class User
         (new User uri: list[i]).read (err, user) ->
           list[i] = user; run()
 
+  @fromHandle: (handle, cb) ->
+    db.hget "/handles", handle, (err, uri) ->
+      cb err, new User uri: uri
+
   constructor: (attrs) ->
     @[key] = value for key, value of attrs
  
@@ -24,6 +28,8 @@ exports.User = class User
 
   readWithEntries: (cb) ->
     @read (err, user) ->
+      return cb err if err
+
       db.smembers "#{user.uri}/entries", (err, list) ->
         i = list.length
         user.entries = list

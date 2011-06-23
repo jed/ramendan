@@ -2,284 +2,265 @@
   <head>
     <title>ramendan</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+    <link rel="stylesheet" href="/styles.css">
 <!-- 
     <script type="text/javascript" src="http://use.typekit.com/oqd2vvf.js"></script>
     <script type="text/javascript">try{Typekit.load()}catch(e){}</script>
  -->
 
     <script type="text/template" id="layout" lang="en">
-      <html>
-        <head>
-          <script type="text/javascript">
-          (function() {
-            if (window.__twitterIntentHandler) return;
-            var intentRegex = /twitter\.com(\:\d{2,4})?\/intent\/(\w+)/,
-                windowOptions = 'scrollbars=yes,resizable=yes,toolbar=no,location=yes',
-                width = 550,
-                height = 420,
-                winHeight = screen.height,
-                winWidth = screen.width;
-          
-            function handleIntent(e) {
-              e = e || window.event;
-              var target = e.target || e.srcElement,
-                  m, left, top;
-          
-              while (target && target.nodeName.toLowerCase() !== 'a') {
-                target = target.parentNode;
-              }
-          
-              if (target && target.nodeName.toLowerCase() === 'a' && target.href) {
-                m = target.href.match(intentRegex);
-                if (m) {
-                  left = Math.round((winWidth / 2) - (width / 2));
-                  top = 0;
-          
-                  if (winHeight > height) {
-                    top = Math.round((winHeight / 2) - (height / 2));
-                  }
-          
-                  window.open(target.href, 'intent', windowOptions + ',width=' + width +
-                                                     ',height=' + height + ',left=' + left + ',top=' + top);
-                  e.returnValue = false;
-                  e.preventDefault && e.preventDefault();
-                }
-              }
-            }
-          
-            if (document.addEventListener) {
-              document.addEventListener('click', handleIntent, false);
-            } else if (document.attachEvent) {
-              document.attachEvent('onclick', handleIntent);
-            }
-            window.__twitterIntentHandler = true;
-          }());
-          </scr#{''}ipt>
-          <style>
-            body {
-              color: white;
-      
-              background: -moz-linear-gradient(center top, #CF2900 0%, #000 40%);
-              background: -webkit-gradient(linear, 0% 0%, 0% 40%, from(#CF2900), to(#000000));
-              background-color: #000;
-            } 
-          </style>
-        </head>
-        <body>
-          <div id="container">#{this}</div>
-        </body>
-      </html>
-    </script>
-    
-    <script type="text/template" id="layout" lang="ja">
-      <html>
-        <head>
-          <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
-          <script type="text/javascript">
-          (function() {
-            if (window.__twitterIntentHandler) return;
-            var intentRegex = /twitter\.com(\:\d{2,4})?\/intent\/(\w+)/,
-                windowOptions = 'scrollbars=yes,resizable=yes,toolbar=no,location=yes',
-                width = 550,
-                height = 420,
-                winHeight = screen.height,
-                winWidth = screen.width;
-          
-            function handleIntent(e) {
-              e = e || window.event;
-              var target = e.target || e.srcElement,
-                  m, left, top;
-          
-              while (target && target.nodeName.toLowerCase() !== 'a') {
-                target = target.parentNode;
-              }
-          
-              if (target && target.nodeName.toLowerCase() === 'a' && target.href) {
-                m = target.href.match(intentRegex);
-                if (m) {
-                  left = Math.round((winWidth / 2) - (width / 2));
-                  top = 0;
-          
-                  if (winHeight > height) {
-                    top = Math.round((winHeight / 2) - (height / 2));
-                  }
-          
-                  window.open(target.href, 'intent', windowOptions + ',width=' + width +
-                                                     ',height=' + height + ',left=' + left + ',top=' + top);
-                  e.returnValue = false;
-                  e.preventDefault && e.preventDefault();
-                }
-              }
-            }
-          
-            if (document.addEventListener) {
-              document.addEventListener('click', handleIntent, false);
-            } else if (document.attachEvent) {
-              document.attachEvent('onclick', handleIntent);
-            }
-            window.__twitterIntentHandler = true;
-          }());
-          </scr#{''}ipt>
-          <style>
-            body {
-              color: white;
-      
-              background: -moz-linear-gradient(center top, #CF2900 0%, #000 40%);
-              background: -webkit-gradient(linear, 0% 0%, 0% 40%, from(#CF2900), to(#000000));
-              background-color: #000;
-            } 
-          </style>
-        </head>
-        <body>
-          <div id="container">#{this}</div>
-        </body>
-      </html>
+      <body>#{this}</body>
     </script>
 
     <script type="text/template" id="index" lang="en">
       <h1 class="tk-neuzon">Ramendan</h1>
-      #{templates.latestUsers(this.users)}
-      #{templates.latestEntries(this.entries)}
     </script>
-
-    <script type="text/template" id="index" lang="ja">
-      <h1>ラーメンダン</h1>
+    
+    <script type="text/template" id="badge" lang="en">
+      hello
     </script>
-
-    <script type="text/template" id="latestUsers" lang="en">
-      <p>Latest users:</p>
-      <ul>
-        #{this.map(templates.latestUser)}
-      </ul>
-    </script>
-
-    <script type="text/template" id="latestUser" lang="en">
-      <li>
-        <img src="#{this.img}">
-        <a href="/followers/#{this.handle}">#{this.name}</a> (<a href="/followers/#{this.handle}">#{this.handle}</a>)
-      </li>
-    </script>    
-
-    <script type="text/template" id="latestEntries" lang="en">
-      <p>Latest entries:</p>
-      <ul>
-        #{this.map(templates.latestEntry)}
-      </ul>
-    </script>
-
-    <script type="text/template" id="latestEntry" lang="en">
-      <li>
-        <img width="#{this.thumbWidth}"
-             height="#{this.thumbHeight}" 
-             src="#{this.thumb}">
-        <img width="#{this.thumbWidth}"
-             height="#{this.thumbHeight}"
-             src="http://maps.google.com/maps/api/staticmap?center=#{this.lat},#{this.lng}&zoom=8&size=#{this.thumbWidth}x#{this.thumbHeight}&sensor=false">
-        #{JSON.stringify(this)}
-      </li>
-    </script>    
 
     <script type="text/template" id="user" lang="en">
-      <script src="http://widgets.twimg.com/j/2/widget.js"></scr#{''}ipt>
-      <script>
-      new TWTR.Widget({
-        version: 2,
-        type: 'search',
-        search: 'from:#{this.handle} ramendan',
-        interval: 6000,
-        title: '',
-        subject: 'Recent offerings:',
-        width: 250,
-        height: 300,
-        theme: {
-          shell: {
-            background: '#000000',
-            color: '#ffffff'
-          },
-          tweets: {
-            background: '#000000',
-            color: '#ffffff',
-            links: '#ffffff'
-          }
-        },
-        features: {
-          scrollbar: true,
-          loop: false,
-          live: false,
-          hashtags: true,
-          timestamp: true,
-          avatars: false,
-          toptweets: false,
-          behavior: 'all'
-        }
-      }).render().start();
-      </scr#{''}ipt>
-      <div>
-        <div><img src="#{this.img}"></div>
-        <div>name: #{this.name}</div>
-        <div>handle: #{this.handle}</div>
-        <div>blurb: #{this.blurb}</div>
-        <div>lang: #{this.lang}</div>
+      <div class="wrap">
+        <header class="cf">
+          <div id="logo-box"><h1 id="logo-user"><a href="">Ramendan<span>August 2011</span></a></h1></div>
+          <ul class="user-stats cf">
+            <li class="user-name"><a href="" class="twitter-user-img"><img height="48" width="48" src="#{this.img}" alt="#{this.name}" class="user-profile-link" data-user-id="815114"></a><a href="">#{this.handle}</a></li>
+            <!-- show different classes for statuses
+              devotee
+              infidel etc
+            -->
+            <li class="user-status devotee">Devotee<span>Status</span></li>
+            <li class="user-progress">#{this.score} / 100<span>Progress</span></li>
+          </ul>
+        </header>
+
+        <div class="badge-box cf">
+          <div class="badge-col">
+            <strong class="badge-ttl">Unlocked Badges <span class="badge-ttl-sub">2pts / each</span></strong>
+            #{templates.badge({
+              name: "Preparation",
+              unlocked: this.before && ("http://twitter.com/" + this.handle + "/status/" + this.before,
+              how: "sending a valid observance tweet before ramendan"
+            })}
+          </div>
+          <div class="badge-col">
+            <div class="badge-item badge-invocation #{this.mention ? 'unlocked' : ''}">
+              <strong>Invocation</strong>
+            </div>
+            <div class="badge-item badge-evangelism #{this.retweet ? 'unlocked' : ''}">
+              <strong>Evangelism</strong>
+              <p>native retweet a @ramendan tweet</p>
+            </div>
+          </div>	
+          <div class="badge-col badge-col-last">
+            <div class="badge-item badge-reverence #{this.hashtag ? 'unlocked' : ''}">
+              <strong>Reverence</strong>
+              <p>send a tweet with “#rAmen.”</p>
+            </div>
+            <div class="badge-item badge-discipline #{this.all ? 'unlocked' : ''}">
+              <strong>Discipline</strong>
+              <p>observe all 30 nights of ramendan</p>
+            </div>
+          </div>				
+        </div>
+
+        <div class="calendar-box">
         
-        <table>
-          <tr>
-            <th>MON</th>
-            <th>TUE</th>
-            <th>WED</th>
-            <th>THU</th>
-            <th>FRI</th>
-            <th>SAT</th>
-            <th>SUN</th>
-          </tr>
-          </tr>
-            <td colspan="6"></td>
-            <td>7/31</td>
-          </tr>
-          <tr>
-            <td>8/1</td>
-            <td>8/2</td>
-            <td>8/3</td>
-            <td>8/4</td>
-            <td>8/5</td>
-            <td>8/6</td>
-            <td>8/7</td>
-          </tr>
-          <tr>
-            <td>8/8</td>
-            <td>8/9</td>
-            <td>8/10</td>
-            <td>8/11</td>
-            <td>8/12</td>
-            <td>8/13</td>
-            <td>8/14</td>
-          </tr>
-          <tr>
-            <td>8/15</td>
-            <td>8/16</td>
-            <td>8/17</td>
-            <td>8/18</td>
-            <td>8/19</td>
-            <td>8/20</td>
-            <td>8/21</td>
-          </tr>
-          <tr>
-            <td>8/22</td>
-            <td>8/23</td>
-            <td>8/24</td>
-            <td>8/25</td>
-            <td>8/26</td>
-            <td>8/27</td>
-            <td>8/28</td>
-          </tr>
-          <tr>
-            <td>8/29</td>
-            <td colspan="6"></td>
-          </tr>
-        </table>
-        
-        <div>entries: #{JSON.stringify(this.entries)}</div>
-      </div>
-    </script>    
+          <ul class="weekday-names cf">
+            <li>Sun</li>
+            <li>Mon</li>
+            <li>Tue</li>
+            <li>Wed</li>
+            <li>Thu</li>
+            <li>Fri</li>
+            <li>Sat</li>
+          </ul>
+          
+          <div class="calendar cf">
+            <!--NOTE 
+              statuses are:
+              day-missed 
+              day-ramen 
+              day-future			
+            -->
+          
+          
+            <!--week 1-->
+            <div class="day">
+              
+            </div>
+            <div class="day day-missed">
+              <img src="/img/day-missed.png" />
+            </div>
+            <div class="day day-missed">
+              <img src="/img/day-missed.png" />
+            </div>
+            <div class="day day-ramen">
+              <a href="">
+                <img src="/img/ramen1.jpg" />
+              </a>
+              
+              <!--jquery?-->
+              <span class="tweet">
+                <span class="tweet-content">Afuri gentei  ramen, so yummy! Could eat everyday @ramendan. mmmhh I would like to have one tomorrow too. yup. actually am hungry right now.</span>
+                <span class="speech-bubble">&nbsp;</span>
+              </span>
+            </div>									
+            <div class="day day-ramen">
+              <a href=""><img src="/img/ramen1.jpg" /></a>
+              <span class="tweet" style="display:none;">
+                <span class="tweet-content">Afuri gentei  ramen, so yummy! Could eat everyday @ramendan. mmmhh I would like to have one tomorrow too. yup. actually am hungry right now.</span>
+                <span class="speech-bubble">&nbsp;</span>
+              </span>						
+            </div>
+            <div class="day day-missed">
+              <img src="/img/day-missed.png" />
+            </div>
+            <div class="day day-ramen">
+              <a href=""><img src="/img/ramen1.jpg" /></a>
+              <span class="tweet" style="display:none;">
+                <span class="tweet-content">Afuri gentei  ramen, so yummy! Could eat everyday @ramendan. mmmhh I would like to have one tomorrow too. yup. actually am hungry right now.</span>
+                <span class="speech-bubble">&nbsp;</span>
+              </span>							
+            </div>				
+            
+            <!--week 2-->
+            <div class="day day-ramen">
+              <a href=""><img src="/img/ramen1.jpg" /></a>
+              <span class="tweet" style="display:none;">
+                <span class="tweet-content">Afuri gentei  ramen, so yummy! Could eat everyday @ramendan. mmmhh I would like to have one tomorrow too. yup. actually am hungry right now.</span>
+                <span class="speech-bubble">&nbsp;</span>
+              </span>							
+            </div>
+            <div class="day day-missed">
+               <img src="/img/day-missed.png" />
+            </div>
+            <div class="day day-ramen">
+              <a href=""><img src="/img/ramen1.jpg" /></a>
+              <span class="tweet" style="display:none;">
+                <span class="tweet-content">Afuri gentei  ramen, so yummy! Could eat everyday @ramendan. mmmhh I would like to have one tomorrow too. yup. actually am hungry right now.</span>
+                <span class="speech-bubble">&nbsp;</span>
+              </span>							
+            </div>
+            <div class="day day-ramen">
+              <a href=""><img src="/img/ramen1.jpg" /></a>
+              <span class="tweet" style="display:none;">
+                <span class="tweet-content">Afuri gentei  ramen, so yummy! Could eat everyday @ramendan. mmmhh I would like to have one tomorrow too. yup. actually am hungry right now.</span>
+                <span class="speech-bubble">&nbsp;</span>
+              </span>							
+            </div>									
+            <div class="day day-missed">
+              <img src="/img/day-missed.png" />
+            </div>
+            <div class="day day-ramen">
+              <a href=""><img src="/img/ramen1.jpg" /></a>
+              <span class="tweet" style="display:none;">
+                <span class="tweet-content">Afuri gentei  ramen, so yummy! Could eat everyday @ramendan. mmmhh I would like to have one tomorrow too. yup. actually am hungry right now.</span>
+                <span class="speech-bubble">&nbsp;</span>
+              </span>							
+            </div>
+            <div class="day day-ramen">
+              <a href=""><img src="/img/ramen1.jpg" /></a>
+              <span class="tweet" style="display:none;">
+                <span class="tweet-content">Afuri gentei  ramen, so yummy! Could eat everyday @ramendan. mmmhh I would like to have one tomorrow too. yup. actually am hungry right now.</span>
+                <span class="speech-bubble">&nbsp;</span>
+              </span>							
+            </div>
+    
+            <!--week 3-->
+            <div class="day day-future">
+              <strong>14</strong>
+              <span>2pts</span>
+            </div>
+            <div class="day day-future">
+              <strong>15</strong>
+              <span>2pts</span>
+            </div>
+            <div class="day day-future">
+              <strong>16</strong>
+              <span>2pts</span>
+            </div>
+            <div class="day day-future">
+              <strong>17</strong>
+              <span>2pts</span>
+            </div>									
+            <div class="day day-future">
+              <strong>18</strong>
+              <span>2pts</span>
+            </div>
+            <div class="day day-future">
+              <strong>19</strong>
+              <span>2pts</span>
+            </div>
+            <div class="day day-future">
+              <strong>20</strong>
+              <span>2pts</span>
+            </div>
+            
+            <!--week 4-->
+            <div class="day day-future">
+              <strong>21</strong>
+              <span>2pts</span>
+            </div>
+            <div class="day day-future">
+              <strong>22</strong>
+              <span>2pts</span>
+            </div>
+            <div class="day day-future">
+              <strong>23</strong>
+              <span>2pts</span>
+            </div>
+            <div class="day day-future">
+              <strong>24</strong>
+              <span>2pts</span>
+            </div>									
+            <div class="day day-future">
+              <strong>25</strong>
+              <span>2pts</span>
+            </div>
+            <div class="day day-future">
+              <strong>26</strong>
+              <span>2pts</span>
+            </div>
+            <div class="day day-future">
+              <strong>27</strong>
+              <span>2pts</span>
+            </div>
+            
+            <!--week 5-->
+            <div class="day day-future">
+              <strong>28</strong>
+              <span>2pts</span>
+            </div>
+            <div class="day day-future">
+              <strong>29</strong>
+              <span>2pts</span>
+            </div>
+            <div class="day day-future">
+              <strong>30</strong>
+              <span>2pts</span>
+            </div>
+            <div class="day day-future">
+              <strong>31</strong>
+              <span>2pts</span>
+            </div>
+          </div>			
+  
+          <ul class="weekday-names cf">
+            <li>Sun</li>
+            <li>Mon</li>
+            <li>Tue</li>
+            <li>Wed</li>
+            <li>Thu</li>
+            <li>Fri</li>
+            <li>Sat</li>
+          </ul>
+        </div>
+
+      <!--#{JSON.stringify(this)}-->
+    </script>
+
   </head>
   <body>
     <script>
@@ -298,9 +279,6 @@
        map = 
        Array.prototype.map=[].map||function(a){for(var b,c=this,d=Array(b=c.length),e=0;e<b;)d[e]=e in c&&a.call(arguments[1],c[e],e++,c);return d}
        
-       write =
-       function(a,b,c){c=a.nodeType;c>8?a.close(a.open(),a.write(b)):a[[,"innerHTML","value"][c]||"nodeValue"]=b}
-       
        
        templates = { en:{}, ja:{} }
        getTemplates(function(val, name) {
@@ -311,22 +289,24 @@
          /^\/$/,
          function() {
            jsonp( "/api?callback=", function( body ) {
-             write( document, templates[body.lang].layout(
+             document.body.innerHTML = templates[body.lang].layout(
                templates[body.lang].index( body.data )
-             ))
+             )
            })
          },
 
          /^\/followers\/(\w+)$/,
          function(capture) {
            jsonp( "/api/users/" + capture[1] + "?callback=", function( body ) {
-             write( document, templates[body.lang].layout( templates[body.lang].user( body.data ) ) )
+             document.body.innerHTML = templates[body.lang].layout(
+               templates[body.lang].user( body.data )
+             )
            })
          },
          
          /* 404 */,
          function() {
-           write( document, templates.layout("404") )
+           document.body.innerHTML = templates.layout("404")
          }
        ])
 
