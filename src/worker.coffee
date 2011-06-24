@@ -54,16 +54,9 @@ onEntry = (data) ->
 
   getDay entry.lat, entry.lng, (err, day) ->
     entry.uri = "#{user.uri}/entries/#{day}"
-
-    if day > 20110829
-      return
-
-    if day < 20110731
-      console.log "new practice from #{user.handle}"
-      return user.attr "practice", data.id
-
-    if err
-      return console.log "non-dusk entry from #{user.handle}"
+    if day < 20110731 then entry.invalid = "beforeRamendan"
+    else if day > 20110829 then entry.invalid = "afterRamendan"
+    else if err then entry.invalid = "beforeSunset"
 
     getPhoto entry.url, (err, data) ->
       entry.img = data.url

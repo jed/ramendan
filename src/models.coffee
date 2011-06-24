@@ -143,8 +143,9 @@ exports.Entry = class Entry
     (new User uri: @user).updateScore ->
 
     op = db.multi()
-    op.sadd "#{@user}/entries", @uri
-    op.hmset @user, lat: @lat, lng: @lng
+    
+    op.sadd "#{@user}/entries", @uri unless @invalid
+    op.hmset @user, lat: @lat, lng: @lng, latest: @uri
 
     delete @lat
     delete @lng
