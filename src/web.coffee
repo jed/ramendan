@@ -14,16 +14,21 @@ templates =
   en: {}
   ja: {}
 
-for lang, obj of templates
-  for name in ["index", "layout", "user"]
-    contents = fs.readFileSync "./templates/#{name}.#{lang}.html", "utf8"
-    try obj[name] = _.template contents
+do compileTemplates = ->
+  console.log "recompiling templates..."
+  for lang, obj of templates
+    for name in ["index", "layout", "user"]
+      contents = fs.readFileSync "./templates/#{name}.#{lang}.html", "utf8"
+      try obj[name] = _.template contents
 
 server = http.createServer (req, res) ->
   uri = url.parse req.url, true
   path = uri.pathname
   lang = req.headers["accept-language"]?.toLowerCase().match(/en|ja/g)?[0] or "en"
-  index = 0
+  i = 0
+  isDev = "dev" of uri.query
+
+  compileTemplates() if isDev
 
   handlers = [
     # get front page
@@ -41,8 +46,8 @@ server = http.createServer (req, res) ->
           cb null, templates[lang].user user
   ]
 
-  while pattern = handlers[index++]
-    handler = handlers[index++]
+  while pattern = handlers[i++]
+    handler = handlers[i++]
 
     if req.captures = path.match pattern
       return handler req, (err, html) ->
@@ -55,8 +60,10 @@ server = http.createServer (req, res) ->
           "Content-Type":   "text/html"
 
         res.end html
-  
-  index = "teaser.#{lang}" if "ramen" of uri.query
+
+  if path is "/" and not isDev
+    req.url = "/teaser.#{lang}.html"
+
   file.serve req, res
   
 server.listen PORT, ->
