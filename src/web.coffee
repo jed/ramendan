@@ -19,7 +19,9 @@ do compileTemplates = ->
   for lang, obj of templates
     for name in ["index", "layout", "user"]
       contents = fs.readFileSync "./templates/#{name}.#{lang}.html", "utf8"
-      try obj[name] = _.template contents
+      obj[name] = 
+        try _.template contents
+        catch e then e.message
 
 server = http.createServer (req, res) ->
   uri = url.parse req.url, true
@@ -37,7 +39,7 @@ server = http.createServer (req, res) ->
       cb null, templates[lang].index {}
 
     # get a user by screen name
-    /^\/users\/(\w+)$/
+    /^\/(\w+)$/
     (req, cb) ->
       User.fromHandle req.captures[1], (err, user) ->
         if err then cb err

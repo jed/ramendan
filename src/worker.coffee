@@ -30,7 +30,7 @@ getDay = (lat, lng, cb) ->
           {sunrise, sunset, time} = JSON.parse data
           dusk = time > sunset
           dawn = time < sunrise
-          day  = time.split(" ")[0].replace /-/g, ""
+          day  = (0 | new Date(time) / 86400000) - 15185
           err  = if dusk or dawn then null else "notAfterSunset"
           cb err, day - dawn
 
@@ -44,7 +44,7 @@ onEntry = (data) ->
 
   entry = new Entry
     user: user.uri
-    id:   data.id
+    uri:  "/status/#{data.id}"
     url:  data.entities?.urls[0].url
     time: data.created_at
     text: data.text.slice 10
@@ -53,10 +53,7 @@ onEntry = (data) ->
   [entry.lat, entry.lng] = data.geo.coordinates
 
   getDay entry.lat, entry.lng, (err, day) ->
-    entry.uri = "#{user.uri}/entries/#{day}"
-    if day < 20110731 then entry.invalid = "beforeRamendan"
-    else if day > 20110829 then entry.invalid = "afterRamendan"
-    else if err then entry.invalid = "beforeSunset"
+    entry.day = day
 
     getPhoto entry.url, (err, data) ->
       entry.img = data.url

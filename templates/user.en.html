@@ -11,29 +11,45 @@
       <li class="user-progress"><%= score %> / 100<span>Progress</span></li>
     </ul>
   </header>
-
+  
+  <% if (obj.latest) { %>
+  <div>latest:</div>
+  <div>
+    <a href="<%= latest.url %>">
+      <img src="<%= latest.thumb %>" height="<%= latest.thumbHeight %>" width="<%= latest.thumbWidth %>">
+    </a>
+    <p><%= latest.text %></p>
+  </div>
+  <% } %>
+  
   <div class="badge-box cf">
     <div class="badge-col">
-      <strong class="badge-ttl">Unlocked Badges <span class="badge-ttl-sub">2pts / each</span></strong>
+      <div>
+        <strong class="badge-ttl">Unlocked Badges <span class="badge-ttl-sub">2pts / each</span></strong>
+      </div>
+      <div class="badge-item badge-preparation <%= obj.practice ? 'unlocked' : '' %>">
+        <strong>Preparation</strong> (+2 points):
+        <p>Observe Ramendan before it officially commences, like <a href="#">this</a>.</p>
+      </div>
     </div>
     <div class="badge-col">
       <div class="badge-item badge-invocation <%= obj.mention ? 'unlocked' : '' %>">
-        <strong>Invocation</strong>
-        <p>mention @ramendan</p>
+        <strong>Invocation</strong> (+2 points):
+        <p>Mention @ramendan in a tweet, like <a href="#">this</a>.</p>
       </div>
       <div class="badge-item badge-evangelism <%= obj.retweet ? 'unlocked' : '' %>">
-        <strong>Evangelism</strong>
-        <p>native retweet a @ramendan tweet</p>
+        <strong>Evangelism</strong> (+2 points):
+        <p>Retweet the wisdom of @ramendan, like <a href="#">this</a>.</p>
       </div>
     </div>	
     <div class="badge-col badge-col-last">
       <div class="badge-item badge-reverence <%= obj.hashtag ? 'unlocked' : '' %>">
-        <strong>Reverence</strong>
-        <p>send a tweet with “#rAmen.”</p>
+        <strong>Affirmation</strong> (+2 points):
+        <p>End a tweet with <code>#rAmen.</code>, like <a href="#">this</a>.</p>
       </div>
       <div class="badge-item badge-discipline <%= obj.all ? 'unlocked' : '' %>">
-        <strong>Discipline</strong>
-        <p>observe all 30 nights of ramendan</p>
+        <strong>Discipline</strong> (+2 points):
+        <p>Observe all 30 nights of Ramendan.</p>
       </div>
     </div>				
   </div>
@@ -41,13 +57,13 @@
   <div class="calendar-box">
   
     <ul class="weekday-names cf">
-      <li>Sun</li>
       <li>Mon</li>
       <li>Tue</li>
       <li>Wed</li>
       <li>Thu</li>
       <li>Fri</li>
       <li>Sat</li>
+      <li>Sun</li>
     </ul>
     
     <div class="calendar cf">
@@ -58,176 +74,55 @@
         day-future			
       -->
     
-    
-      <!--week 1-->
-      <div class="day">
-        
-      </div>
-      <div class="day day-missed">
-        <img src="/img/day-missed.png" />
-      </div>
-      <div class="day day-missed">
-        <img src="/img/day-missed.png" />
-      </div>
-      <div class="day day-ramen">
-        <a href="">
-          <img src="/img/ramen1.jpg" />
-        </a>
-        
-        <!--jquery?-->
-        <span class="tweet">
-          <span class="tweet-content">Afuri gentei  ramen, so yummy! Could eat everyday @ramendan. mmmhh I would like to have one tomorrow too. yup. actually am hungry right now.</span>
-          <span class="speech-bubble">&nbsp;</span>
-        </span>
-      </div>									
-      <div class="day day-ramen">
-        <a href=""><img src="/img/ramen1.jpg" /></a>
-        <span class="tweet" style="display:none;">
-          <span class="tweet-content">Afuri gentei  ramen, so yummy! Could eat everyday @ramendan. mmmhh I would like to have one tomorrow too. yup. actually am hungry right now.</span>
-          <span class="speech-bubble">&nbsp;</span>
-        </span>						
-      </div>
-      <div class="day day-missed">
-        <img src="/img/day-missed.png" />
-      </div>
-      <div class="day day-ramen">
-        <a href=""><img src="/img/ramen1.jpg" /></a>
-        <span class="tweet" style="display:none;">
-          <span class="tweet-content">Afuri gentei  ramen, so yummy! Could eat everyday @ramendan. mmmhh I would like to have one tomorrow too. yup. actually am hungry right now.</span>
-          <span class="speech-bubble">&nbsp;</span>
-        </span>							
-      </div>				
+      <div class="day"><strong>25</strong></div>
+      <div class="day"><strong>26</strong></div>
+      <div class="day"><strong>27</strong></div>
+      <div class="day"><strong>28</strong></div>
+      <div class="day"><strong>29</strong></div>
+      <div class="day"><strong>30</strong></div>
       
-      <!--week 2-->
-      <div class="day day-ramen">
-        <a href=""><img src="/img/ramen1.jpg" /></a>
-        <span class="tweet" style="display:none;">
-          <span class="tweet-content">Afuri gentei  ramen, so yummy! Could eat everyday @ramendan. mmmhh I would like to have one tomorrow too. yup. actually am hungry right now.</span>
-          <span class="speech-bubble">&nbsp;</span>
-        </span>							
-      </div>
-      <div class="day day-missed">
-         <img src="/img/day-missed.png" />
-      </div>
-      <div class="day day-ramen">
-        <a href=""><img src="/img/ramen1.jpg" /></a>
-        <span class="tweet" style="display:none;">
-          <span class="tweet-content">Afuri gentei  ramen, so yummy! Could eat everyday @ramendan. mmmhh I would like to have one tomorrow too. yup. actually am hungry right now.</span>
-          <span class="speech-bubble">&nbsp;</span>
-        </span>							
-      </div>
-      <div class="day day-ramen">
-        <a href=""><img src="/img/ramen1.jpg" /></a>
-        <span class="tweet" style="display:none;">
-          <span class="tweet-content">Afuri gentei  ramen, so yummy! Could eat everyday @ramendan. mmmhh I would like to have one tomorrow too. yup. actually am hungry right now.</span>
-          <span class="speech-bubble">&nbsp;</span>
-        </span>							
-      </div>									
-      <div class="day day-missed">
-        <img src="/img/day-missed.png" />
-      </div>
-      <div class="day day-ramen">
-        <a href=""><img src="/img/ramen1.jpg" /></a>
-        <span class="tweet" style="display:none;">
-          <span class="tweet-content">Afuri gentei  ramen, so yummy! Could eat everyday @ramendan. mmmhh I would like to have one tomorrow too. yup. actually am hungry right now.</span>
-          <span class="speech-bubble">&nbsp;</span>
-        </span>							
-      </div>
-      <div class="day day-ramen">
-        <a href=""><img src="/img/ramen1.jpg" /></a>
-        <span class="tweet" style="display:none;">
-          <span class="tweet-content">Afuri gentei  ramen, so yummy! Could eat everyday @ramendan. mmmhh I would like to have one tomorrow too. yup. actually am hungry right now.</span>
-          <span class="speech-bubble">&nbsp;</span>
-        </span>							
-      </div>
+      <% for ( var
+          today = (0 | new Date / 86400000) - 15185,
+          i = 0,
+          entry = obj.entries[0];
+          i < 30;
+          entry = obj.entries[++i]
+      ) { %>
+      
+          <% if (entry) { %>
+	          <div class="day day-ramen" style="background-image: url(<%= entry.thumb%>)">
+			        <span class="tweet">
+			          <span class="tweet-content"><%= entry.text %></span>
+			          <span class="speech-bubble">&nbsp;</span>
+			        </span>
+            </div>
+          <% } else if (i < today) { %>
+	          <div class="day day-missed" style="background-image:url(/img/day-missed.png)">
+            </div>
+          <% } else { %>
+	          <div class="day day-future">
+			        <strong><%= i || 31 %></strong><br>
+			        <span>3pts</span>
+            </div>
+          <% } %>
 
-      <!--week 3-->
-      <div class="day day-future">
-        <strong>14</strong>
-        <span>2pts</span>
-      </div>
-      <div class="day day-future">
-        <strong>15</strong>
-        <span>2pts</span>
-      </div>
-      <div class="day day-future">
-        <strong>16</strong>
-        <span>2pts</span>
-      </div>
-      <div class="day day-future">
-        <strong>17</strong>
-        <span>2pts</span>
-      </div>									
-      <div class="day day-future">
-        <strong>18</strong>
-        <span>2pts</span>
-      </div>
-      <div class="day day-future">
-        <strong>19</strong>
-        <span>2pts</span>
-      </div>
-      <div class="day day-future">
-        <strong>20</strong>
-        <span>2pts</span>
-      </div>
-      
-      <!--week 4-->
-      <div class="day day-future">
-        <strong>21</strong>
-        <span>2pts</span>
-      </div>
-      <div class="day day-future">
-        <strong>22</strong>
-        <span>2pts</span>
-      </div>
-      <div class="day day-future">
-        <strong>23</strong>
-        <span>2pts</span>
-      </div>
-      <div class="day day-future">
-        <strong>24</strong>
-        <span>2pts</span>
-      </div>									
-      <div class="day day-future">
-        <strong>25</strong>
-        <span>2pts</span>
-      </div>
-      <div class="day day-future">
-        <strong>26</strong>
-        <span>2pts</span>
-      </div>
-      <div class="day day-future">
-        <strong>27</strong>
-        <span>2pts</span>
-      </div>
-      
-      <!--week 5-->
-      <div class="day day-future">
-        <strong>28</strong>
-        <span>2pts</span>
-      </div>
-      <div class="day day-future">
-        <strong>29</strong>
-        <span>2pts</span>
-      </div>
-      <div class="day day-future">
-        <strong>30</strong>
-        <span>2pts</span>
-      </div>
-      <div class="day day-future">
-        <strong>31</strong>
-        <span>2pts</span>
-      </div>
-    </div>			
+      <% } %>
+
+    <div class="day"><strong>30</strong></div>
+    <div class="day"><strong>31</strong></div>
+    <div class="day"><strong>1</strong></div>
+    <div class="day"><strong>2</strong></div>
+    <div class="day"><strong>3</strong></div>
+    <div class="day"><strong>4</strong></div>		
 
     <ul class="weekday-names cf">
-      <li>Sun</li>
       <li>Mon</li>
       <li>Tue</li>
       <li>Wed</li>
       <li>Thu</li>
       <li>Fri</li>
       <li>Sat</li>
+      <li>Sun</li>
     </ul>
   </div>
 </div>

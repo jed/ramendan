@@ -2,7 +2,7 @@ db      = require "./db"
 {OAuth} = require "oauth"
 
 exports.User = class User
-  @latest: (cb) ->
+  @top: (cb) ->
     db.zrevrange "/users", 0, 19, (err, list) ->
       i = list.length
 
@@ -30,20 +30,25 @@ exports.User = class User
     @read (err, user) ->
       return cb err if err
 
-      db.smembers "#{user.uri}/entries", (err, list) ->
-        i = list.length
-        user.entries = list
-  
-        do run = ->
-          return cb null, user unless i--
-          (new Entry uri: list[i]).read (err, entry) ->
-            list[i] = entry; run()
+      (new Entry uri: user.latest).read (err, entry) ->
+        user.latest = entry if entry
+
+        db.hgetall "#{user.uri}/entries", (err, props) ->
+          user.entries = Array 31
+          keys = Object.keys props
+          i = keys.length
+ 
+          do run = ->
+            return cb null, user unless i--
+            (new Entry uri: props[i]).read (err, entry) ->
+              user.entries[i] = entry
+              run()
 
   attr: (key, val, cb) ->
     db.hset @uri, key, val, cb or ->
 
   updateScore: (cb) ->
-    db.scard "#{@uri}/entries", (err, num) =>
+    db.hlen "#{@uri}/entries", (err, num) =>
       score = (num or 0) + 2 * (num is 30)
       db.hgetall @uri, (err, props) =>
         total = !!props.practice +
@@ -59,7 +64,7 @@ exports.User = class User
     op = db.multi()
 
     op.hmset @uri , @
-    op.zadd  "/users", +new Date(@since), @uri
+    op.zadd  "/users", @score, @uri
     op.hset  "/handles", @handle , @uri
 
     op.exec (err) => cb err, @
@@ -140,11 +145,16 @@ exports.Entry = class Entry
         cb err, entry
 
   save: (cb) ->
-    (new User uri: @user).updateScore ->
+    if @day < 0 then @invalid = "beforeRamendan"
+    else if @day > 30 then @invalid = "afterRamendan"
+    else if err then @invalid = "beforeSunset"
 
     op = db.multi()
+
+    if @invalid is "beforeRamendan"
+      op.hset @user, "practice", @uri
     
-    op.sadd "#{@user}/entries", @uri unless @invalid
+    op.hset "#{@user}/entries", @day, @uri unless @invalid
     op.hmset @user, lat: @lat, lng: @lng, latest: @uri
 
     delete @lat
@@ -155,4 +165,6 @@ exports.Entry = class Entry
 
     op.hmset @uri, @
 
-    op.exec (err) => cb err, @
+    op.exec (err) =>
+      (new User uri: @user).updateScore ->
+      cb err, @
