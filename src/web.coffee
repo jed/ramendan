@@ -28,7 +28,7 @@ server = http.createServer (req, res) ->
   path = uri.pathname
   lang = req.headers["accept-language"]?.toLowerCase().match(/en|ja/g)?[0] or "en"
   i = 0
-  isDev = "dev" of uri.query
+  isDev = process.env.SERVER is not "PRODUCTION"
 
   compileTemplates() if isDev
 
@@ -47,6 +47,10 @@ server = http.createServer (req, res) ->
         else user.readWithEntries (err, user) ->
           cb null, templates[lang].user user
   ]
+  
+  if path is "/" and not isDev
+    req.url = "/teaser.#{lang}.html"
+    return file.serve req, res
 
   while pattern = handlers[i++]
     handler = handlers[i++]
@@ -62,9 +66,6 @@ server = http.createServer (req, res) ->
           "Content-Type":   "text/html"
 
         res.end html
-
-  if path is "/" and not isDev
-    req.url = "/teaser.#{lang}.html"
 
   file.serve req, res
   
