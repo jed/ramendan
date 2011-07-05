@@ -28,7 +28,7 @@ server = http.createServer (req, res) ->
   path = uri.pathname
   lang = req.headers["accept-language"]?.toLowerCase().match(/en|ja/g)?[0] or "en"
   i = 0
-  isDev = process.env.SERVER is not "PRODUCTION"
+  isDev = !req.headers.host.indexOf "localhost"
 
   compileTemplates() if isDev
 
