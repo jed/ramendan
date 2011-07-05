@@ -6,6 +6,7 @@
     "oauth":       "",
     "node-static": "",
     "redis":       "",
-    "embedly":     ""
+    "embedly":     "",
+    "underscore":  ""
   }
 }
