@@ -13,7 +13,15 @@ app.configure ->
   app.use app.router
 
 app.get "/", (req, res) ->
-  lang = req.headers["accept-language"]?.toLowerCase().match(/en|ja/g)?[0] or "en"
+  lang = getLang req
   res.render "index-#{'en'}", name: "bar"
 
+app.get "/users/:id", (req, res) ->
+  lang = getLang req
+  res.render "user-#{'en'}", name: req.params.id
+
 app.listen PORT, -> console.log "now listening on port #{PORT}"
+
+getLang = (req) ->
+  req.headers["accept-language"]?.toLowerCase().match(/en|ja/g)?[0] or "en"
+  
