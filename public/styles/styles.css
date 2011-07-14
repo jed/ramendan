@@ -70,7 +70,7 @@ header a {color:#FFF;}
 COMMON
 **********************/
 
-.btn-outer {padding:15px 0;}
+.btn-outer {padding:20px 0;}
 .btn {
     color:#444;
     -moz-border-radius: 4px;
@@ -123,13 +123,10 @@ COMMON
 /************************
 TOP
 **********************/
-.wrap-top {
-	background: url(/img/logo-bg.png) no-repeat right -100px;
-	}
-
-
-.count {display:block; color:#CCC ; color:rgba(250, 250, 250, 0.5) ;}
-#top-ttl {font-size:130px; color:#FFF; line-height:100%; }
+.wrap-top {background: url(/img/logo-bg.png) no-repeat right -100px;}
+.count {display:block; color:#CCC ; color:rgba(250, 250, 250, 1) ; padding-top:50px;}
+#top-ttl {font-size:100px; color:#FFF; line-height:100%; }
+.lead {padding-bottom:80px;}
 nav {
 	position:fixed;
 	top:-10px;
