@@ -3,6 +3,8 @@ PORT = process.env.PORT
 express = require "express"
 app = express.createServer()
 
+{User, Entry} = require "./models"
+
 app.set "view engine", "hbs"
 
 app.configure ->
@@ -18,7 +20,12 @@ app.get "/", (req, res) ->
 
 app.get "/users/:id", (req, res) ->
   lang = getLang req
-  res.render "user-#{'en'}", name: req.params.id
+
+  User.fromHandle req.params.id, (err, user) ->
+    if err then res.send err.message
+
+    else user.readWithEntries (err, user) ->
+      res.render "user-#{'en'}", name: JSON.stringify user
 
 app.listen PORT, -> console.log "now listening on port #{PORT}"
 
