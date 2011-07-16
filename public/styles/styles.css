@@ -249,7 +249,7 @@ header {padding-bottom:30px;}
 	}
 	
 .user-stats li {float:left;padding:0 20px;border-right:1px solid #FFF; line-height:110%; height:50px;}
-.user-stats li span {color:#000; opacity: 0.5; font-size:14px; display:block;}
+.user-stats li span {color:rgba(250, 250, 250, 0.5);  font-size:14px; display:block;}
 .user-stats .user-name {font-size:30px;}
 .user-stats .user-name a {text-decoration: none;}
 .user-stats .user-name .twitter-user-img {float:left; padding-right:10px;}
@@ -373,6 +373,41 @@ MOBILE
 	.faq-block, .ttl-main#faq, .user-stats, #logo-box  {float:none;}
 	.faq-block, .wrap {width:auto;}
 	.weekday-names {display:none;}
+	
+	.day{float:none; width:auto; clear:both; background: rgba(0, 0, 0, 0.5); }
+	.day-none {display:none;}
+	.badge-box {padding-bottom:0;}
+	.day .pic-link {float:left; width:80px;}
+	.pic {float:left; display:block; width:80px; height:80px;}
+	.speech-bubble {display:none;}	
+	.tweet {
+		background:none;
+		float:left;
+		height:80px;	
+		width:280px;
+		display: inline;
+		padding:10px;
+		border:none;
+		position:inherit;
+		font-size:14px;
+		top:inherit;
+		left:inherit;		
+		z-index:auto;
+		line-height:150%;
+		vertical-align: middle;
+		-moz-border-radius: 0;
+		-webkit-border-radius: 0;
+		border-radius: 0;
+		border-bottom:1px solid #000;	
+		text-align:left;	
+		}
+	.tweet-content {display:inline; color:#FFF;}
+	.day:before, .day:after {
+	  content: "\0020"; display: block; height: 0; visibility: hidden;
+	}
+	
+	.day:after { clear: both; }
+	.day { zoom: 1; }
 
 }
 
