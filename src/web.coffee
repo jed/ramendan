@@ -15,17 +15,14 @@ app.configure ->
   app.use app.router
 
 app.get "/", (req, res) ->
-  lang = getLang req
-  res.render "index-#{'en'}", name: "bar"
+  res.render "index-#{getLang req}", name: "bar"
 
 app.get "/users/:id", (req, res) ->
-  lang = getLang req
-
   User.fromHandle req.params.id, (err, user) ->
     if err then res.send err.message
 
     else user.readWithEntries (err, user) ->
-      res.render "user-#{'en'}", name: JSON.stringify user
+      res.render "user-#{getLang req}", name: JSON.stringify user
 
 app.listen PORT, -> console.log "now listening on port #{PORT}"
 
