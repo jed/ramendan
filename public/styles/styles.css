@@ -374,10 +374,12 @@ MOBILE
 	.faq-block, .wrap {width:auto;}
 	.weekday-names {display:none;}
 	
-	.day{float:none; width:auto; clear:both; background: rgba(0, 0, 0, 0.5); }
+	.user-stats .user-name {font-size:20px;}
+	
+	.day{float:none; width:auto; height:auto; clear:both; background: rgba(0, 0, 0, 0.5); }
 	.day-none {display:none;}
 	.badge-box {padding-bottom:0;}
-	.day .pic-link {float:left; width:80px;}
+	.day .pic-link {float:left; width:80px; height:80px;}
 	.pic {float:left; display:block; width:80px; height:80px;}
 	.speech-bubble {display:none;}	
 	.tweet {
@@ -386,7 +388,7 @@ MOBILE
 		height:80px;	
 		width:280px;
 		display: inline;
-		padding:10px;
+		padding:0 0 0 10px;
 		border:none;
 		position:inherit;
 		font-size:14px;
@@ -399,7 +401,7 @@ MOBILE
 		-webkit-border-radius: 0;
 		border-radius: 0;
 		border-bottom:1px solid #000;	
-		text-align:left;	
+		text-align:left;
 		}
 	.tweet-content {display:inline; color:#FFF;}
 	.day:before, .day:after {
