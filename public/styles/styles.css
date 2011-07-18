@@ -271,7 +271,7 @@ header {padding-bottom:30px;}
 .badge-ttl {display:block; padding-bottom:20px; height:30px;}
 .badge-ttl-sub {font-size:14px; color:rgba(255, 255, 255, 0.5);}
 
-.badge-item {font-size:14px; line-height:120%; height:30px; padding:0 0 20px 35px;}
+.badge-item {font-size:14px; line-height:120%; height:30px; padding:0 0 20px 0px;}
 .badge-item strong, .badge-item p { color:rgba(255, 255, 255, 0.5);}
 
 .badge-preparation {background:url(/img/badge-preparation-locked.png) no-repeat 0 0;}
@@ -304,14 +304,24 @@ header {padding-bottom:30px;}
 	position:relative;
 	}
 	
-.day.day-future {background:url(/img/day-future.jpg) no-repeat 0 0; 	color:#000;}
-.day.day-future strong {
-	display:block;
-	padding-top:50px;
-	font-size:30px;
+.day .day-date {
+	position:absolute; 
+	bottom:0;
+	left:0;
+	background:#000;
+	color:#FFF;
+	padding:2px 5px;
+	line-height:100%;
 	}
 
-.day.day-future span {font-weight:bold; font-size:14px;}
+.day.day-future {background:url(/img/day-future.jpg) no-repeat 0 0; }
+.day.day-future span {
+	font-weight:bold; 
+	font-size:14px; 
+	display:block; 
+	padding-top:50px;
+	color:#000;
+	}
 
 .day a {
 	display:block;
@@ -363,35 +373,41 @@ MOBILE
 **********************/
 
 @media screen and (max-width: 800px) {
+	.lead {padding-bottom:0;}
 	nav, #logo-box {position:inherit; margin-top:-10px; width:auto;}
 	nav ul {display:inline; }
 	nav ul li {display:inline; padding-right:10px;}
-	.count {margin-top:10px;}
+	.count {margin-top:10px; padding-top:20px;}
 	.count, .lead {text-align:center;}
-	#top-ttl {font-size:5em; text-align:center; }
+	#top-ttl {font-size:2.3em; text-align:center; }
 	.main-wrap {width:auto; padding:0 15px 15px 15px;}
+	.step {padding-left:40px;}
+	.numeric-step {font-size:50px; top:5px;}
 	.faq-block, .ttl-main#faq, .user-stats, #logo-box  {float:none;}
 	.faq-block, .wrap {width:auto;}
 	.weekday-names {display:none;}
 	
 	.user-stats .user-name {font-size:20px;}
 	
-	.day{float:none; width:auto; height:auto; clear:both; background: rgba(0, 0, 0, 0.5); }
+	.day{float:none; width:auto; height:auto; clear:both; background: rgba(0, 0, 0, 0.5); border-bottom:1px solid #444;}
 	.day-none {display:none;}
-	.badge-box {padding-bottom:0;}
+	.badge-box {padding-bottom:0; margin-bottom:0;}
+	.day .day-date {font-size:12px; padding:2px; bottom:auto; top:0; }
+	.day.day-future {background-position:-52px;}
 	.day .pic-link {float:left; width:80px; height:80px;}
 	.pic {float:left; display:block; width:80px; height:80px;}
-	.speech-bubble {display:none;}	
+	.speech-bubble {display:none;}
 	.tweet {
 		background:none;
-		float:left;
-		height:80px;	
-		width:280px;
-		display: inline;
-		padding:0 0 0 10px;
+		float:none;
+		height:auto;
+		width:auto;
+		display:block;
+		padding:5px 0 5px 90px;
 		border:none;
 		position:inherit;
 		font-size:14px;
+		font-weight:normal;
 		top:inherit;
 		left:inherit;		
 		z-index:auto;
@@ -399,11 +415,10 @@ MOBILE
 		vertical-align: middle;
 		-moz-border-radius: 0;
 		-webkit-border-radius: 0;
-		border-radius: 0;
-		border-bottom:1px solid #000;	
+		border-radius: 0;	
 		text-align:left;
 		}
-	.tweet-content {display:inline; color:#FFF;}
+	.tweet-content {display:inline; color:#FFF; font-weight:normal; text-align:left;}
 	.day:before, .day:after {
 	  content: "\0020"; display: block; height: 0; visibility: hidden;
 	}
