@@ -19,7 +19,7 @@ app.get "/", (req, res) ->
 
 app.get "/users/:id", (req, res) ->
   User.fromHandle req.params.id, (err, user) ->
-    if err
+    if not user
       res.render "user404-#{getLang req}", name: req.params.id
 
     else
