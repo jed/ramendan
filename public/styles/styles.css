@@ -130,7 +130,7 @@ TOP
 nav {
 	position:fixed;
 	top:-10px;
-	left:10px;
+	left:20px;
 	border:5px solid #FFF;
 	background: rgba(0, 0, 0, 0.5);
 	border-top:none;
@@ -143,6 +143,15 @@ nav ul {padding:20px 10px;}
 nav ul li {text-align:center; padding-bottom: 15px; line-height:110%; font-size:16px;}
 nav ul li a {color:#FFF;}
 nav ul li a:hover {color:#FF6600; text-decoration:none;}
+
+#top-logo {
+	background:url(/img/logo-trans-s.png) no-repeat 0 0;
+	width:60px;
+	height:50px;
+	display:block;
+	text-indent:-9999px;
+	margin:0 auto;
+	}
 
 .main-wrap {
 	padding:20px 0 0 0;
@@ -274,18 +283,22 @@ header {padding-bottom:30px;}
 .badge-item {font-size:14px; line-height:120%; height:30px; padding:0 0 20px 0px;}
 .badge-item strong, .badge-item p { color:rgba(255, 255, 255, 0.5);}
 
+/*
 .badge-preparation {background:url(/img/badge-preparation-locked.png) no-repeat 0 0;}
 .badge-invocation {background:url(/img/badge-preparation-locked.png) no-repeat 0 0;}
 .badge-evangelism {background:url(/img/badge-preparation-locked.png) no-repeat 0 0;}
 .badge-reverence {background:url(/img/badge-preparation-locked.png) no-repeat 0 0;}
 .badge-discipline {background:url(/img/badge-preparation-locked.png) no-repeat 0 0;}
+*/
 
 .badge-item.unlocked strong {color:rgba(255, 255, 255, 1);}
+/*
 .badge-preparation.unlocked {background:url(/img/badge-preparation.png) no-repeat 0 0;}
 .badge-invocation.unlocked {background:url(/img/badge-preparation.png) no-repeat 0 0;}
 .badge-evangelism.unlocked {background:url(/img/badge-preparation.png) no-repeat 0 0;}
 .badge-reverence.unlocked {background:url(/img/badge-preparation.png) no-repeat 0 0;}
 .badge-discipline.unlocked {background:url(/img/badge-preparation.png) no-repeat 0 0;}
+*/
 
 .calendar-box {padding-bottom:40px;}
 
@@ -359,6 +372,16 @@ header {padding-bottom:30px;}
 	}
 
 /************************
+404
+**********************/
+	.not-found  {
+		text-align: center;
+		padding:150px 0 300px 0;
+		position:relative;
+		}
+
+
+/************************
 CLEARS
 **********************/
 .cf:before, .cf:after {
@@ -368,6 +391,7 @@ CLEARS
 .cf:after { clear: both; }
 .cf { zoom: 1; }
 
+
 /************************
 MOBILE
 **********************/
@@ -375,8 +399,10 @@ MOBILE
 @media screen and (max-width: 800px) {
 	.lead {padding-bottom:0;}
 	nav, #logo-box {position:inherit; margin-top:-10px; width:auto;}
-	nav ul {display:inline; }
-	nav ul li {display:inline; padding-right:10px;}
+	nav ul li {display:inline; padding:0;}
+	#top-logo {float:left; padding:0 10px 5px 0;}
+	#ramendan {display:block; text-align:left; padding-top:5px;}
+	#how {border-right:1px solid #FFF; padding-right:10px; margin-right:10px;}
 	.count {margin-top:10px; padding-top:20px;}
 	.count, .lead {text-align:center;}
 	#top-ttl {font-size:2.3em; text-align:center; }
