@@ -19,13 +19,14 @@ app.get "/", (req, res) ->
 
 app.get "/users/:id", (req, res) ->
   User.fromHandle req.params.id, (err, user) ->
-    if err then res.send err.message
+    if err
+      res.render "user404-#{getLang req}", name: req.params.id
 
-    else user.readWithEntries (err, user) ->
-      res.render "user-#{getLang req}", name: JSON.stringify user
+    else
+      user.readWithEntries (err, user) ->
+        res.render "user-#{getLang req}", user
 
 app.listen PORT, -> console.log "now listening on port #{PORT}"
 
 getLang = (req) ->
   req.headers["accept-language"]?.toLowerCase().match(/en|ja/g)?[0] or "en"
-  

@@ -13,7 +13,10 @@ exports.User = class User
 
   @fromHandle: (handle, cb) ->
     db.hget "/handles", handle, (err, uri) ->
-      cb err, new User uri: uri
+      if uri
+        cb null, new User uri: uri
+      else
+        cb 404
 
   constructor: (attrs) ->
     @[key] = value for key, value of attrs
