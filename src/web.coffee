@@ -24,6 +24,7 @@ app.get "/users/:id", (req, res) ->
 
     else
       user.readWithEntries (err, user) ->
+        user.src = JSON.stringify user
         res.render "user-#{getLang req}", user
 
 app.listen PORT, -> console.log "now listening on port #{PORT}"

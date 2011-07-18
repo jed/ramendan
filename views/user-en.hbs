@@ -1,14 +1,15 @@
+    <!--{{src}}-->
   	<div class="wrap">
   		<header class="cf">
 		  	<div id="logo-box"><h1 id="logo-user" ><a href=""><span class="tk-neuzon">Ramendan</span><span class="period">August 2011</span></a></h1></div>
 			<ul class="user-stats cf">
-				<li class="user-name"><a href="" class="twitter-user-img"><img height="48" width="48" src="http://a2.twimg.com/profile_images/1164735503/Jed_Schmidt_normal.jpeg" alt="Jed Schmidt" class="user-profile-link" data-user-id="815114"></a><a href="">{{name}}</a></li>
+				<li class="user-name"><a href="http://twitter.com/{{handle}}" class="twitter-user-img"><img height="48" width="48" src="{{img}}" alt="{{handle}}" class="user-profile-link"></a><a href="http://twitter.com/{{handle}}">{{name}}</a></li>
 				<!-- show different classes for statuses
 					devotee
 					infidel etc
 				-->
 				<li class="user-status devotee">Devotee<span>Status</span></li>
-				<li class="user-progress">15 / 100<span>Progress</span></li>
+				<li class="user-progress">{{score}} / 100<span>Progress</span></li>
 			</ul>
 		</header>
 		
@@ -27,7 +28,7 @@
 				</div>
 				<div class="badge-item badge-evangelism">
 					<strong>Evangelism</strong>
-					<p>send a tweet with Ò#rAmen.Ó</p>
+					<p>end a tweet with <code>#rAmen.</code></p>
 				</div>
 			</div>	
 			<div class="badge-col badge-col-last">
