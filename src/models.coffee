@@ -37,14 +37,15 @@ exports.User = class User
         user.latest = entry if entry
 
         db.hgetall "#{user.uri}/entries", (err, props) ->
-          user.entries = Array 31
+          today = (0 | new Date / 86400000) - 15185
+          user.entries = ({day: num, future: num > today} for num in [0..29])
           keys = Object.keys props
           i = keys.length
  
           do run = ->
             return cb null, user unless i--
             (new Entry uri: props[i]).read (err, entry) ->
-              user.entries[i] = entry
+              user.entries[entry.day] = entry
               run()
 
   attr: (key, val, cb) ->
@@ -156,8 +157,10 @@ exports.Entry = class Entry
 
     if @invalid is "beforeRamendan"
       op.hset @user, "practice", @uri
-    
-    op.hset "#{@user}/entries", @day, @uri unless @invalid
+      
+    unless @invalid
+      op.hset "#{@user}/entries", @day, @uri
+      
     op.hmset @user, lat: @lat, lng: @lng, latest: @uri
 
     delete @lat

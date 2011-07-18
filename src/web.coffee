@@ -5,7 +5,8 @@ app = express.createServer()
 
 {User, Entry} = require "./models"
 
-app.set "view engine", "hbs"
+app.set "view engine", "mustache"
+app.register ".mustache", require "stache"
 
 app.configure ->
   app.use express.static "#{__dirname}/../public"
@@ -25,11 +26,6 @@ app.get "/users/:id", (req, res) ->
     else
       user.readWithEntries (err, user) ->
         user.src = JSON.stringify user
-
-        #workaround because handlebars won't render if blocks
-        for key in ["practice", "all", "retweet", "mention", "hashtag"]
-          user[key] = if user[key] then " unlocked" else ""
-
         res.render "user-#{getLang req}", user
 
 app.listen PORT, -> console.log "now listening on port #{PORT}"

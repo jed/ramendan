@@ -1,0 +1,135 @@
+<!--{{src}}-->
+<div class="wrap">
+	<header class="cf">
+  	<div id="logo-box"><h1 id="logo-user" ><a href=""><span class="tk-neuzon">Ramendan</span><span class="period">August 2011</span></a></h1></div>
+		<ul class="user-stats cf">
+			<li class="user-name"><a href="http://twitter.com/{{handle}}" class="twitter-user-img"><img height="48" width="48" src="{{img}}" alt="{{handle}}" class="user-profile-link"></a><a href="http://twitter.com/{{handle}}">{{name}}</a></li>
+			<!-- show different classes for statuses
+				devotee
+				infidel etc
+			-->
+			<li class="user-status devotee">Devotee<span>Status</span></li>
+			<li class="user-progress">{{score}} / 100<span>Progress</span></li>
+		</ul>
+	</header>
+
+	<div class="badge-box cf">
+		<div class="badge-col">
+			<strong class="badge-ttl">Unlocked Badges <span class="badge-ttl-sub">2pts / each</span></strong>
+			<div class="badge-item badge-preparation{{#practice}} unlocked{{/practice}}">
+				<strong>Preparation</strong>
+				<p>send a valid observance tweet before ramendan starts</p>
+			</div>
+		</div>
+		<div class="badge-col">
+			<div class="badge-item badge-invocation{{#retweet}} unlocked{{/retweet}}">
+				<strong>Invocation</strong>
+				<p>native retweet a @ramendan tweet</p>
+			</div>
+			<div class="badge-item badge-evangelism{{#hashtag}} unlocked{{/hashtag}}">
+				<strong>Evangelism</strong>
+				<p>end a tweet with <code>#rAmen.</code></p>
+			</div>
+		</div>	
+		<div class="badge-col badge-col-last">
+			<div class="badge-item badge-reverence{{#mention}} unlocked{{/mention}}">
+				<strong>Reverence</strong>
+				<p>mention @ramendan</p>
+			</div>
+			<div class="badge-item badge-discipline{{#all}} unlocked{{/all}}">
+				<strong>Discipline</strong>
+				<p>observe all 30 nights of ramendan</p>
+			</div>
+		</div>				
+	</div>
+	
+	{{#latest}}
+		<div>latest:</div>
+		<div><img src="{{thumb}}" height="{{thumbHeight}}" width="{{thumbWidth}}"></div>
+		<div>{{text}}</div>
+		{{#invalid}}
+			<div>(invalid)</div>
+		{{/invalid}}
+	{{/latest}}
+	
+	<div class="calendar-box">
+		<ul class="weekday-names cf">
+			<li>Mon</li>
+			<li>Tue</li>
+			<li>Wed</li>
+			<li>Thu</li>
+			<li>Fri</li>
+			<li>Sat</li>
+			<li>Sun</li>
+		</ul>
+
+		<div class="day day-none">
+			<strong class="day-date">25</strong>			
+		</div>
+		<div class="day day-none">
+			<strong class="day-date">26</strong>			
+		</div>
+		<div class="day day-none">
+			<strong class="day-date">27</strong>			
+		</div>
+		<div class="day day-none">
+			<strong class="day-date">28</strong>			
+		</div>
+		<div class="day day-none">
+			<strong class="day-date">29</strong>			
+		</div>
+		<div class="day day-none">
+			<strong class="day-date">30</strong>			
+		</div>
+
+		{{#entries}}
+			{{#time}}
+				<strong class="day-date">03</strong>
+				<a href="" class="pic-link"><img src="/img/ramen1.jpg" class="pic"/></a>
+				<!--jquery?-->
+				<span class="tweet">
+					<span class="tweet-content">Afuri gentei  ramen, so yummy! Could eat everyday @ramendan. mmmhh I would like to have one tomorrow too. yup. actually am hungry right now.</span>
+					<span class="speech-bubble">&nbsp;</span>
+				</span>
+			{{/time}}
+
+			{{^time}}
+				{{#future}}
+					<div class="day day-future">
+						<strong class="day-date">{{#day}}{{day}}{{/day}}{{^day}}31{{/day}}</strong>
+						<span>2pts</span>
+					</div>
+				{{/future}}
+
+				{{^future}}
+					<div class="day day-missed">
+						<strong class="day-date">{{#day}}{{day}}{{/day}}{{^day}}31{{/day}}</strong>
+						<img src="/img/day-missed.png" class="pic"/>
+					</div>
+				{{/future}}
+			{{/time}}
+		{{/entries}}
+		
+		<div class="day day-none">
+			<strong class="day-date">30</strong>			
+		</div>
+		<div class="day day-none">
+			<strong class="day-date">31</strong>			
+		</div>
+		<div class="day day-none">
+			<strong class="day-date">1</strong>			
+		</div>
+		<div class="day day-none">
+			<strong class="day-date">2</strong>			
+		</div>
+		<div class="day day-none">
+			<strong class="day-date">3</strong>			
+		</div>
+		<div class="day day-none">
+			<strong class="day-date">4</strong
+		</div>
+		<div class="day day-none">
+			<strong class="day-date">5</strong>			
+		</div>
+	</div>
+</div>

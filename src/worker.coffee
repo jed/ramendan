@@ -47,15 +47,19 @@ onEntry = (data) ->
     uri:  "/status/#{data.id}"
     url:  data.entities?.urls[0].url
     time: data.created_at
-    text: data.text.slice 10
+    text: data.text.slice(10).replace /^ http\S+/g, ""
     invalid: no
 
   [entry.lat, entry.lng] = data.geo.coordinates
 
   getDay entry.lat, entry.lng, (err, day) ->
+    return console.log "invalid entry: #{err}" if err
+
     entry.day = day
 
     getPhoto entry.url, (err, data) ->
+      return console.log "invalid entry: #{err}" if err
+
       entry.img = data.url
       entry.height = data.height
       entry.width = data.width
@@ -64,7 +68,7 @@ onEntry = (data) ->
       entry.thumbHeight = data.thumbnail_height
         
       entry.save (err, entry) ->
-        console.log "new entry: #{entry.uri} - #{entry.invalid or 'valid'}"
+        console.log "new entry: #{entry.uri}"
 
 onFollow = (data) ->
   user = new User
