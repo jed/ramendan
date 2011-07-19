@@ -7,5 +7,6 @@
     "oauth":       "",
     "redis":       "",
     "embedly":     "",
+    "stache":      ""
   }
 }
