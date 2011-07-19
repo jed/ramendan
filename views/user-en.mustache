@@ -84,13 +84,14 @@
 
 		{{#entries}}
 			{{#time}}
-				<strong class="day-date">03</strong>
-				<a href="" class="pic-link"><img src="/img/ramen1.jpg" class="pic"/></a>
-				<!--jquery?-->
-				<span class="tweet">
-					<span class="tweet-content">Afuri gentei  ramen, so yummy! Could eat everyday @ramendan. mmmhh I would like to have one tomorrow too. yup. actually am hungry right now.</span>
-					<span class="speech-bubble">&nbsp;</span>
-				</span>
+				<div class="day day-ramen">
+					<strong class="day-date">{{#day}}{{day}}{{/day}}{{^day}}31{{/day}}</strong>
+					<a href="http://twitter.com/{{handle}}{{uri}}" class="pic-link"><img src="{{thumb}}" class="pic"/></a>
+					<span class="tweet">
+						<span class="tweet-content">{{text}}</span>
+						<span class="speech-bubble">&nbsp;</span>
+					</span>
+				</div>
 			{{/time}}
 
 			{{^time}}

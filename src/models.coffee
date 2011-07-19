@@ -41,7 +41,7 @@ exports.User = class User
           user.entries = ({day: num, future: num > today} for num in [0..29])
           keys = Object.keys props
           i = keys.length
- 
+          
           do run = ->
             return cb null, user unless i--
             (new Entry uri: props[i]).read (err, entry) ->
@@ -137,6 +137,7 @@ exports.Entry = class Entry
       if err then cb message: err
       else if not exists then cb status: 404, message: "Not found."
       else db.hgetall @uri, (err, props) ->
+        props.day = +props.day
         if err then cb message: err
         else cb null, new Entry props
 
