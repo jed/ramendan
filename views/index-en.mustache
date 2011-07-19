@@ -90,7 +90,12 @@
 				{{#users}}
 					<li>
 						<img src="{{img}}" width="48" height="48"><br>
-						<img src="http://maps.googleapis.com/maps/api/staticmap?center={{lat}},{{lng}}&zoom=8&size=96x96&sensor=false"><br>
+						{{#lat}}
+							<img src="http://maps.googleapis.com/maps/api/staticmap?center={{lat}},{{lng}}&zoom=8&size=96x96&sensor=false"><br>
+						{{/lat}}
+						{{^lat}}
+							<img src="/path/to/some/other/image/when/no/geodata/exists.png"><br>
+						{{/lat}}
 						<a href="/users/{{handle}}">{{handle}}</a><br>
 						{{score}}<br>
 					</li>
