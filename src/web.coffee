@@ -16,7 +16,8 @@ app.configure ->
   app.use app.router
 
 app.get "/", (req, res) ->
-  res.render "index-#{getLang req}", name: "bar"
+  User.top (err, users) ->
+    res.render "index-#{getLang req}", users: users
 
 app.get "/users/:id", (req, res) ->
   User.fromHandle req.params.id, (err, user) ->
@@ -25,7 +26,6 @@ app.get "/users/:id", (req, res) ->
 
     else
       user.readWithEntries (err, user) ->
-        user.src = JSON.stringify user
         res.render "user-#{getLang req}", user
 
 app.listen PORT, -> console.log "now listening on port #{PORT}"

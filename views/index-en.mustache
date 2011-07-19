@@ -83,5 +83,19 @@
 				</dd>
 			</dl>
 		</div>
+		
+		<div>
+			<h2>Leaderboard</h2>
+			<ul>
+				{{#users}}
+					<li>
+						<img src="{{img}}" width="48" height="48"><br>
+						<img src="http://maps.googleapis.com/maps/api/staticmap?center={{lat}},{{lng}}&zoom=14&size=96x96&sensor=false"><br>
+						<a href="/users/{{handle}}">{{handle}}</a><br>
+						{{score}}<br>
+					</li>
+				{{/users}}
+			</ul>
+		</div>
 	</div>
 </div>
