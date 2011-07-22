@@ -4,6 +4,7 @@
 			<li class="tk-neuzon" id="top-logo"><a href="#top">Ramendan Top</a></li>
 			<li class="tk-neuzon" id="ramendan"><a href="#top">Ramendan</a></li>
 			<li class="tk-neuzon" id="how"><a href="#how-it-works">How it works</a></li>
+			<li class="tk-neuzon" id="how"><a href="#leaderboard">Leader board</a></li>
 			<li class="tk-neuzon" id="faq"><a href="#faq">FAQ</a></li>
 		</ul>
 	</nav>
@@ -71,7 +72,29 @@
 			</div>
 		
 		</div>
-	
+		
+		
+		<div class="content-block cf" id="leaderboard">
+			<h2 class="ttl-main">Leaderboard</h2>
+			<ul>
+				{{#users}}
+					<li class="cf">
+						<a href="/users/{{handle}}" class="leader-pic"><img src="{{img}}" width="48" height="48"></a>
+<!--
+						{{#lat}}
+							<img src="http://maps.googleapis.com/maps/api/staticmap?center={{lat}},{{lng}}&zoom=8&size=48x48&sensor=false"><br>
+						{{/lat}}
+						{{^lat}}
+							<img src="/path/to/some/other/image/when/no/geodata/exists.png"><br>
+						{{/lat}}
+-->
+						<a href="/users/{{handle}}">{{handle}}</a><br>
+						{{score}}pts<br>
+					</li>
+				{{/users}}
+			</ul>
+		</div>
+		
 		<div class="content-block cf">
 			<h2 class="ttl-main" id="faq">FAQ</h2>
 			<dl class="faq-block">
@@ -84,23 +107,6 @@
 			</dl>
 		</div>
 		
-		<div>
-			<h2>Leaderboard</h2>
-			<ul>
-				{{#users}}
-					<li>
-						<img src="{{img}}" width="48" height="48"><br>
-						{{#lat}}
-							<img src="http://maps.googleapis.com/maps/api/staticmap?center={{lat}},{{lng}}&zoom=8&size=96x96&sensor=false"><br>
-						{{/lat}}
-						{{^lat}}
-							<img src="/path/to/some/other/image/when/no/geodata/exists.png"><br>
-						{{/lat}}
-						<a href="/users/{{handle}}">{{handle}}</a><br>
-						{{score}}<br>
-					</li>
-				{{/users}}
-			</ul>
-		</div>
+
 	</div>
 </div>

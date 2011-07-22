@@ -43,15 +43,6 @@
 		</div>				
 	</div>
 	
-	{{#latest}}
-		<div>latest:</div>
-		<div><img src="{{thumb}}" height="{{thumbHeight}}" width="{{thumbWidth}}"></div>
-		<div>{{text}}</div>
-		{{#invalid}}
-			<div>(invalid)</div>
-		{{/invalid}}
-	{{/latest}}
-	
 	<div class="calendar-box">
 		<ul class="weekday-names cf">
 			<li>Mon</li>
@@ -64,8 +55,20 @@
 		</ul>
 
 		<div class="day day-none">
-			<strong class="day-date">25</strong>			
+		{{#latest}}
+			<strong class="day-date">{{#day}}{{day}}{{/day}}{{^day}}31{{/day}} <span>0pts</span></strong>
+			<a href="http://twitter.com/{{handle}}{{uri}}" class="pic-link"><img src="{{img}}" height="{{height}}" width="{{width}}" class="pic"/></a>
+			<span class="tweet">
+				<span class="tweet-content">{{text}}</span>
+				<span class="speech-bubble">&nbsp;</span>
+			</span>
+		{{#invalid}}
+			<div>(invalid)</div>
+		{{/invalid}}
+		{{/latest}}	
 		</div>
+			
+		
 		<div class="day day-none">
 			<strong class="day-date">26</strong>			
 		</div>
