@@ -162,7 +162,7 @@ exports.Entry = class Entry
     unless @invalid
       op.hset "#{@user}/entries", @day, @uri
       
-    op.hmset @user, lat: @lat, lng: @lng, latest: @uri
+    op.hmset @user, latest: @uri, country: @country
 
     delete @lat
     delete @lng

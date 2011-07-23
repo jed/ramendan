@@ -27,12 +27,12 @@ getDay = (lat, lng, cb) ->
       response.on "data", (chunk) -> data += chunk
       response.on "end", ->
         try
-          {sunrise, sunset, time} = JSON.parse data
+          {sunrise, sunset, time, countryName} = JSON.parse data
           dusk = time > sunset
           dawn = time < sunrise
           day  = (0 | new Date(time) / 86400000) - 15185
           err  = if dusk or dawn then null else "notAfterSunset"
-          cb err, day - dawn
+          cb err, day - dawn, countryName or "Somewhere"
 
         catch e
           cb e
@@ -52,9 +52,10 @@ onEntry = (data) ->
 
   [entry.lat, entry.lng] = data.geo.coordinates
 
-  getDay entry.lat, entry.lng, (err, day) ->
+  getDay entry.lat, entry.lng, (err, day, country) ->
     return console.log "invalid entry: #{err}" if err
 
+    entry.country = country
     entry.day = day
 
     getPhoto entry.url, (err, data) ->
@@ -79,17 +80,16 @@ onFollow = (data) ->
     lang:   data.lang
     since:  new Date
     score:  0
+    country: "Unknown"
 
   user.save (err, user) ->
     return console.log err if err
 
     console.log "new user: #{user.handle}"
-    ###
     twitter.tweet(
-      "@#{user.handle} Your #ramendan calendar is ready! http://ramendan.com/#{user.handle}"
+      "@#{user.handle} Your #ramendan calendar is ready! http://ramendan.com/users/#{user.handle}"
       (err, data) -> console.log err or "confirmation sent to #{user.handle}."
     )
-    ###
 
 twitter = new Twitter
   consumer:

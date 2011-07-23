@@ -80,16 +80,9 @@
 				{{#users}}
 					<li class="cf">
 						<a href="/users/{{handle}}" class="leader-pic"><img src="{{img}}" width="48" height="48"></a>
-<!--
-						{{#lat}}
-							<img src="http://maps.googleapis.com/maps/api/staticmap?center={{lat}},{{lng}}&zoom=8&size=48x48&sensor=false"><br>
-						{{/lat}}
-						{{^lat}}
-							<img src="/path/to/some/other/image/when/no/geodata/exists.png"><br>
-						{{/lat}}
--->
 						<a href="/users/{{handle}}">{{handle}}</a><br>
 						{{score}}pts<br>
+						{{country}}<br>
 					</li>
 				{{/users}}
 			</ul>
