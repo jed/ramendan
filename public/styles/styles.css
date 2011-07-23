@@ -361,9 +361,9 @@ header {padding-bottom:30px;}
 	width:280px;
 	display: block;
 	padding:10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	border-radius: 10px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
 	position:absolute;
 	top:-150px;
 	left:-90px;
