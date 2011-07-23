@@ -1,7 +1,7 @@
 <!--{{src}}-->
 <div class="wrap">
 	<header class="cf">
-  	<div id="logo-box"><h1 id="logo-user" ><a href=""><span class="tk-neuzon">Ramendan</span><span class="period">August 2011</span></a></h1></div>
+  	<div id="logo-box"><h1 id="logo-user" ><a href="../"><span class="tk-neuzon">Ramendan</span><span class="period">August 2011</span></a></h1></div>
 		<ul class="user-stats cf">
 			<li class="user-name"><a href="http://twitter.com/{{handle}}" class="twitter-user-img"><img height="48" width="48" src="{{img}}" alt="{{handle}}" class="user-profile-link"></a><a href="http://twitter.com/{{handle}}">{{name}}</a></li>
 			<!-- show different classes for statuses
@@ -54,19 +54,18 @@
 			<li>Sun</li>
 		</ul>
 
-		<div class="box-invalid">
-			<div class="day day-none">
-			{{#latest}}
-				<img src="{{thumb}}" height="{{thumb-height}}" width="{{thumb-width}}" class="pic"/>
-				<span class="tweet">
-					<span class="tweet-content">{{text}}</span>
-					<span class="speech-bubble">&nbsp;</span>
-				</span>
-			{{#invalid}}
-				<div>Entry is invalid.</div>
-			{{/invalid}}
-			{{/latest}}	
-			</div>
+		<div class="box-invalid">	
+			<div class="invalid-entry cf">
+				{{#latest}}
+					<img src="{{thumb}}" class="thumb"/>
+					<div class="invalid-details">
+						{{#invalid}}
+						<strong>Sorry, this latest entry is invalid.</strong><br/>
+						{{/invalid}}
+						<span>{{text}}</span>						
+					</div>
+				{{/latest}}	
+			</div>			
 		</div>
 		
 

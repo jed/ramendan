@@ -385,7 +385,22 @@ header {padding-bottom:30px;}
 .day-none .speech-bubble{background-image:url(/img/bubble-btm-invalid.png);}
 
 .box-invalid {
-	width:808px;
+	width:788px;
+	float:left;
+	padding:20px 20px 20px 0;
+	/* background:rgba(250,250,250,0.2); */
+	height:93px;
+	overflow:hidden;
+	font-size:14px;
+	line-height:130%;
+	}
+.box-invalid strong {color:rgba(250,250,250,0.5);}	
+.thumb {
+	float:left;
+	max-height:93px;
+	margin-right:10px;
+	}
+.invalid-details {
 	float:left;
 	}
 
