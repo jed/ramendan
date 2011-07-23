@@ -54,36 +54,21 @@
 			<li>Sun</li>
 		</ul>
 
-		<div class="day day-none">
-		{{#latest}}
-			<strong class="day-date">{{#day}}{{day}}{{/day}}{{^day}}31{{/day}} <span>0pts</span></strong>
-			<a href="http://twitter.com/{{handle}}{{uri}}" class="pic-link"><img src="{{img}}" height="{{height}}" width="{{width}}" class="pic"/></a>
-			<span class="tweet">
-				<span class="tweet-content">{{text}}</span>
-				<span class="speech-bubble">&nbsp;</span>
-			</span>
-		{{#invalid}}
-			<div>(invalid)</div>
-		{{/invalid}}
-		{{/latest}}	
+		<div class="box-invalid">
+			<div class="day day-none">
+			{{#latest}}
+				<img src="{{thumb}}" height="{{thumb-height}}" width="{{thumb-width}}" class="pic"/>
+				<span class="tweet">
+					<span class="tweet-content">{{text}}</span>
+					<span class="speech-bubble">&nbsp;</span>
+				</span>
+			{{#invalid}}
+				<div>Entry is invalid.</div>
+			{{/invalid}}
+			{{/latest}}	
+			</div>
 		</div>
-			
 		
-		<div class="day day-none">
-			<strong class="day-date">26</strong>			
-		</div>
-		<div class="day day-none">
-			<strong class="day-date">27</strong>			
-		</div>
-		<div class="day day-none">
-			<strong class="day-date">28</strong>			
-		</div>
-		<div class="day day-none">
-			<strong class="day-date">29</strong>			
-		</div>
-		<div class="day day-none">
-			<strong class="day-date">30</strong>			
-		</div>
 
 		{{#entries}}
 			{{#time}}
@@ -131,9 +116,6 @@
 		</div>
 		<div class="day day-none">
 			<strong class="day-date">4</strong
-		</div>
-		<div class="day day-none">
-			<strong class="day-date">5</strong>			
 		</div>
 	</div>
 </div>

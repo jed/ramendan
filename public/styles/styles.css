@@ -226,6 +226,7 @@ blockquote {padding-bottom:10px;}
 	-moz-border-radius: 5px;
 	border-radius: 5px;
 	}
+	
 
 /************************
 USER PAGE
@@ -382,6 +383,11 @@ header {padding-bottom:30px;}
 	}
 .day-none .tweet {background:#999;}
 .day-none .speech-bubble{background-image:url(/img/bubble-btm-invalid.png);}
+
+.box-invalid {
+	width:808px;
+	float:left;
+	}
 
 /************************
 404
