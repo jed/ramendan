@@ -15,29 +15,29 @@
 
 	<div class="badge-box cf">
 		<div class="badge-col">
-			<strong class="badge-ttl">Unlocked Badges <span class="badge-ttl-sub">2pts / each</span></strong>
+			<strong class="badge-ttl">Badges <span class="badge-ttl-sub">2pts / each</span></strong>
 			<div class="badge-item badge-preparation{{#practice}} unlocked{{/practice}}">
-				<strong>Preparation</strong>
+				<strong>Preparation</strong> {{#practice}}UNLOCKED!{{/practice}}
 				<p>send a valid observance tweet before ramendan starts</p>
 			</div>
 		</div>
 		<div class="badge-col">
 			<div class="badge-item badge-invocation{{#retweet}} unlocked{{/retweet}}">
-				<strong>Invocation</strong>
+				<strong>Invocation</strong> {{#retweet}}UNLOCKED!{{/retweet}}
 				<p>native retweet a @ramendan tweet</p>
 			</div>
 			<div class="badge-item badge-evangelism{{#hashtag}} unlocked{{/hashtag}}">
-				<strong>Evangelism</strong>
+				<strong>Evangelism</strong> {{#hashtag}}UNLOCKED!{{/hashtag}}
 				<p>end a tweet with <code>#rAmen.</code></p>
 			</div>
 		</div>	
 		<div class="badge-col badge-col-last">
 			<div class="badge-item badge-reverence{{#mention}} unlocked{{/mention}}">
-				<strong>Reverence</strong>
+				<strong>Reverence</strong> {{#mention}}UNLOCKED!{{/mention}}
 				<p>mention @ramendan</p>
 			</div>
 			<div class="badge-item badge-discipline{{#all}} unlocked{{/all}}">
-				<strong>Discipline</strong>
+				<strong>Discipline</strong> {{#all}}UNLOCKED!{{/all}}
 				<p>observe all 30 nights of ramendan</p>
 			</div>
 		</div>				
@@ -57,7 +57,7 @@
 		<div class="box-invalid">	
 			<div class="invalid-entry cf">
 				{{#latest}}
-					<img src="{{thumb}}" class="thumb"/>
+					<img src="{{thumb}}" class="thumb" width="{{thumbWidth}}" height="{{thumbWidth}}"/>
 					<div class="invalid-details">
 						{{#invalid}}
 						<strong>Sorry, this latest entry is invalid.</strong><br/>
@@ -73,7 +73,7 @@
 			{{#time}}
 				<div class="day day-ramen">
 					<strong class="day-date">{{#day}}{{day}}{{/day}}{{^day}}31{{/day}}</strong>
-					<a href="http://twitter.com/{{handle}}{{uri}}" class="pic-link"><img src="{{img}}" height="{{height}}" width="{{width}}" class="pic"/></a>
+					<a href="http://twitter.com/{{handle}}{{uri}}" class="pic-link"><img src="{{thumb}}" height="{{thumbHeight}}" width="{{thumbWidth}}" class="pic"/></a>
 					<span class="tweet">
 						<span class="tweet-content">{{text}}</span>
 						<span class="speech-bubble">&nbsp;</span>
@@ -85,7 +85,7 @@
 				{{#future}}
 					<div class="day day-future">
 						<strong class="day-date">{{#day}}{{day}}{{/day}}{{^day}}31{{/day}}</strong>
-						<span>2pts</span>
+						<span>3 pts</span>
 					</div>
 				{{/future}}
 

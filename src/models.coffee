@@ -138,6 +138,23 @@ exports.Entry = class Entry
       else if not exists then cb status: 404, message: "Not found."
       else db.hgetall @uri, (err, props) ->
         props.day = +props.day
+
+        {thumbWidth, thumbHeight} = props
+        ratio = thumbWidth / thumbHeight
+        
+        if ratio < 1
+          thumbWidth = 133
+          thumbHeight = 133 / ratio
+
+        else if ratio > 1
+          thumbHeight = 133
+          thumbWidth = 133 / ratio
+          
+        else thumbHeight = thumbWidth = 133
+        
+        props.thumbWidth = thumbWidth
+        props.thumbHeight = thumbHeight
+        
         if err then cb message: err
         else cb null, new Entry props
 
