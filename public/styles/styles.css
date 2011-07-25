@@ -290,7 +290,14 @@ header {padding-bottom:30px;}
 .badge-ttl {display:block; padding-bottom:20px; height:30px;}
 .badge-ttl-sub {font-size:14px; color:rgba(255, 255, 255, 0.5);}
 
-.badge-item {font-size:14px; line-height:120%; height:30px; padding:0 0 20px 0px;}
+.badge-item {
+	font-size:14px; 
+	line-height:120%; 
+	height:30px; 
+	padding:0 0 20px 30px;
+	background: url(../img/badge-locked.png) no-repeat 0 0;
+	
+	}
 .badge-item strong, .badge-item p { color:rgba(255, 255, 255, 0.5);}
 
 /*
@@ -300,7 +307,9 @@ header {padding-bottom:30px;}
 .badge-reverence {background:url(/img/badge-preparation-locked.png) no-repeat 0 0;}
 .badge-discipline {background:url(/img/badge-preparation-locked.png) no-repeat 0 0;}
 */
-
+.badge-item.unlocked {
+	background:url(../img/badge.png) no-repeat 0 0;
+	}
 .badge-item.unlocked strong {color:rgba(255, 255, 255, 1);}
 /*
 .badge-preparation.unlocked {background:url(/img/badge-preparation.png) no-repeat 0 0;}
@@ -342,8 +351,9 @@ header {padding-bottom:30px;}
 	font-weight:bold; 
 	font-size:14px; 
 	display:block; 
-	padding-top:50px;
+	padding-top:60px;
 	color:#000;
+	background:url(../img/badge-locked-cal.png) no-repeat 50% 40px;
 	}
 	
 .day-none .day-date {background:#444;}
