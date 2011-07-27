@@ -53,14 +53,14 @@ exports.User = class User
 
   updateScore: (cb) ->
     db.hlen "#{@uri}/entries", (err, num) =>
-      score = (num or 0) + 2 * (num is 30)
+      score = 3 * (num or 0) + (2 * (num is 30))
       db.hgetall @uri, (err, props) =>
         total = !!props.practice +
                 !!props.mention +
                 !!props.retweet +
                 !!props.hashtag
 
-        score += total * 2
+        score += (total * 2)
         
         db.hset @uri, "score", score, cb or ->
 
