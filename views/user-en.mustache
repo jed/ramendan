@@ -59,9 +59,9 @@
 				{{#latest}}
 					<img src="{{thumb}}" class="thumb" width="{{thumbWidth}}" height="{{thumbWidth}}"/>
 					<div class="invalid-details">
-						{{#invalid}}
-						<strong>Sorry, this latest entry is invalid.</strong><br/>
-						{{/invalid}}
+						<strong>Here is your latest entry.</strong>
+						{{#invalid}}(though it doesn't count in this case){{/invalid}}
+						<br/>
 						<span>{{text}}</span>						
 					</div>
 				{{/latest}}	

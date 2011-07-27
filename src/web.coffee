@@ -19,6 +19,9 @@ app.get "/", (req, res) ->
   User.top (err, users) ->
     res.render "index-#{getLang req}", users: users
 
+app.get /^\/(\w+)$/, (req, res) ->
+  res.redirect "/users/#{req.params[0]}"
+
 app.get "/users/:id", (req, res) ->
   User.fromHandle req.params.id, (err, user) ->
     if not user
@@ -31,4 +34,6 @@ app.get "/users/:id", (req, res) ->
 app.listen PORT, -> console.log "now listening on port #{PORT}"
 
 getLang = (req) ->
-  req.headers["accept-language"]?.toLowerCase().match(/en|ja/g)?[0] or "en"
+  # japanese support can wait
+  #req.headers["accept-language"]?.toLowerCase().match(/en|ja/g)?[0] or "en"
+  "en"

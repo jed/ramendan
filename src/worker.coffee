@@ -87,7 +87,7 @@ onFollow = (data) ->
 
     console.log "new user: #{user.handle}"
     twitter.tweet(
-      "@#{user.handle} Your #ramendan calendar is ready! http://ramendan.com/users/#{user.handle}"
+      "@#{user.handle} Your #ramendan calendar is ready! http://ramendan.com/#{user.handle}"
       (err, data) -> console.log err or "confirmation sent to #{user.handle}."
     )
 
