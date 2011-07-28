@@ -395,7 +395,7 @@ header {padding-bottom:30px;}
 .day-none .speech-bubble{background-image:url(/img/bubble-btm-invalid.png);}
 
 .box-invalid {
-	width:788px;
+	width:790px;
 	float:left;
 	padding:0 20px 20px 0;
 	/* background:rgba(250,250,250,0.2); */
@@ -413,6 +413,7 @@ header {padding-bottom:30px;}
 	float:left;
 	}
 
+.invalid-msg {color:rgba(250,250,250,0.5); display:block; padding-bottom:10px;}
 /************************
 404
 **********************/
@@ -454,9 +455,11 @@ MOBILE
 	.faq-block, .ttl-main#faq, .user-stats, #logo-box  {float:none;}
 	.faq-block, .wrap {width:auto;}
 	.weekday-names {display:none;}
-	
+	.box-invalid {width:auto; height:80px;}
 	.user-stats .user-name {font-size:20px;}
-	
+	.thumb {width:80px; height:80px;}
+	.invalid-details { float:none; display:inline;}
+	.invalid-msg {display:inline; padding:0;}
 	.day{float:none; width:auto; height:auto; clear:both; background: rgba(0, 0, 0, 0.5); border-bottom:1px solid #444;}
 	.day-none {display:none;}
 	.badge-box {padding-bottom:0; margin-bottom:0;}

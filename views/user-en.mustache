@@ -60,8 +60,7 @@
 					<img src="{{thumb}}" class="thumb" width="{{thumbWidth}}" height="{{thumbWidth}}"/>
 					<div class="invalid-details">
 						<strong>Here is your latest entry.</strong>
-						{{#invalid}}(though it doesn't count in this case){{/invalid}}
-						<br/>
+						<span class="invalid-msg"> {{#invalid}}(though it doesn't count in this case){{/invalid}}</span>						
 						<span>{{text}}</span>						
 					</div>
 				{{/latest}}	
