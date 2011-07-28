@@ -120,6 +120,8 @@ COMMON
 	
 .center {text-align:center;}
 
+small {text-align:center; display:block; padding:20px 0;}
+
 /************************
 TOP
 **********************/
@@ -414,6 +416,8 @@ header {padding-bottom:30px;}
 	}
 
 .invalid-msg {color:rgba(250,250,250,0.5); display:block; padding-bottom:10px;}
+
+
 /************************
 404
 **********************/
