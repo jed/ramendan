@@ -8,7 +8,7 @@ exports.User = class User
 
       do run = ->
         unless i--
-          return cb null, list.sort (a, b) -> a.score > b.score
+          return cb null, list
 
         (new User uri: list[i]).read (err, user) ->
           list[i] = user; run()

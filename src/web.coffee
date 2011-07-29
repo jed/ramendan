@@ -20,9 +20,10 @@ app.configure "development", ->
 app.configure "production", ->
   app.use express.static "#{__dirname}/../public", maxAge: 31557600000
   app.use express.errorHandler()
-
+  
 app.get "/", (req, res) ->
   User.top (err, users) ->
+    users.sort (a, b) -> b.score - a.score
     res.render "index-#{getLang req}", users: users
 
 app.get /^\/(\w+)$/, (req, res) ->
