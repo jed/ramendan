@@ -105,19 +105,21 @@ exports.Twitter = class Twitter
       @token.secret
     )
 
-    request.on "response", (response) ->
+    request.on "response", (response) =>
       console.log "connected to twitter."
 
       response.setEncoding "utf8"
 
-      response.on "error", (err) ->
+      response.on "error", (err) =>
         console.log err
+        setTimeout (=> @listen cb), 5000
 
-      response.on "data", (json) ->
+      response.on "data", (json) =>
         try cb JSON.parse json
 
-      response.on "end", ->
+      response.on "end", =>
         console.log "disconnected from twitter."
+        setTimeout (=> @listen cb), 5000
 
     request.end()
 
