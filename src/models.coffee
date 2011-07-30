@@ -40,7 +40,7 @@ exports.User = class User
 
         db.hgetall "#{user.uri}/entries", (err, props) ->
           today = (0 | new Date / 86400000) - 15185
-          user.entries = ({day: num, future: num > today} for num in [0..29])
+          user.entries = ({day: num, future: num >= today} for num in [0..29])
           keys = Object.keys props
           i = keys.length
           
@@ -64,7 +64,12 @@ exports.User = class User
 
         score += (total * 2)
         
-        db.hset @uri, "score", score, cb or ->
+        op = db.multi()
+
+        op.hset @uri, "score", score
+        op.zadd "/users", score, @uri
+
+        op.exec cb
 
   save: (cb) ->
     op = db.multi()
