@@ -39,7 +39,7 @@ exports.User = class User
         user.latest = entry if entry
 
         db.hgetall "#{user.uri}/entries", (err, props) ->
-          today = (0 | new Date / 86400000) - 15186
+          today = (0 | new Date / 86400000) - 15187
           user.entries = ({day: num, future: num > today} for num in [0..29])
           keys = Object.keys props
           i = keys.length
