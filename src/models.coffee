@@ -177,7 +177,7 @@ exports.Entry = class Entry
 
   save: (cb) ->
     if @day < 0 then @invalid = "beforeRamendan"
-    else if @day > 30 then @invalid = "afterRamendan"
+    else if @day > 29 then @invalid = "afterRamendan"
     else if err then @invalid = "beforeSunset"
 
     op = db.multi()
