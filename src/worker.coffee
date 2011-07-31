@@ -38,8 +38,7 @@ getDay = (lat, lng, cb) ->
           cb e
 
 onEntry = (data) ->
-  console.log "incoming entry"
-  console.log data
+  console.log "incoming entry: /status/#{data.id}"
 
   user = new User
     uri: "/users/#{data.user.id_str}"
