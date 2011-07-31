@@ -38,6 +38,9 @@ getDay = (lat, lng, cb) ->
           cb e
 
 onEntry = (data) ->
+  console.log "incoming entry"
+  console.log data
+
   user = new User
     uri: "/users/#{data.user.id_str}"
     handle: data.user.screen_name
