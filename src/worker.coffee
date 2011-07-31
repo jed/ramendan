@@ -30,7 +30,7 @@ getDay = (lat, lng, cb) ->
           {sunrise, sunset, time, countryName} = JSON.parse data
           dusk = time > sunset
           dawn = time < sunrise
-          day  = (0 | new Date(time) / 86400000) - 15185
+          day  = (0 | new Date(time) / 86400000) - 15186
           err  = if dusk or dawn then null else "notAfterSunset"
           cb err, day - dawn, countryName or "Somewhere"
 
