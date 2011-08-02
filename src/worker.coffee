@@ -1,1 +1,3 @@
-(require "./Tweet").listen()
+{Tweet} = require "./models"
+
+Tweet.listen()

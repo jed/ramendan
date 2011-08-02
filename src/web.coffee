@@ -3,8 +3,7 @@ PORT = process.env.PORT
 express = require "express"
 app = express.createServer()
 
-User = require "./User"
-Entry = require "./Entry"
+{User, Entry} = require "./models"
 
 app.set "view engine", "mustache"
 app.register ".mustache", require "stache"

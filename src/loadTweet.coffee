@@ -1,4 +1,4 @@
-Tweet = require "./Tweet"
+{Tweet} = require "./models"
 arg = process.argv[2]
 id = (arg.match /\d+/ or []).pop()
 
