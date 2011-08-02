@@ -6,6 +6,24 @@ http = require "http"
 
 embedly = new Api(key: 'daf28dd296b811e0bc3c4040d3dc5c07')
 
+credentials = 
+  consumer:
+    key: "tcrzlUrmOHd6idGBYC4KTA"
+    secret: "JURa2YCNWAhgw47TubS6SoTWawGhSqYYEq94f2bdUc"
+  token:
+    key: "315955679-zp64SIsgXwlW28qDEDt69APrql7u0AJFJFthJXoS"
+    secret: "4BYQzGuK3dd5tNbo8orWwiFS9f7dZOATvz8MrLnrQ"
+
+oa = new OAuth(
+  "https://twitter.com/oauth/request_token"
+  "https://twitter.com/oauth/access_token"
+  credentials.consumer.key
+  credentials.consumer.secret
+  "1.0A"
+  null
+  "HMAC-SHA1"
+)
+
 class Entry
   @latest: (cb) ->
     db.lrange "/entries/latest", 0, -1, (err, list = []) ->
@@ -65,7 +83,7 @@ class Entry
             dusk = time >= sunset
 
             @day-- if dawn
-            @invalid = "beforeSunset" unless dusk or dawn
+            @invalid = "#{time} is before #{sunset}" unless dusk or dawn
 
             cb null
 
@@ -117,7 +135,9 @@ class Entry
 
     op = db.multi()
 
-    unless @invalid
+    if @invalid
+      console.log "#{@uri} is invalid: #{@invalid}"
+    else
       op.hset "#{@user}/entries", @day, @uri
       
     op.hmset @user, latest: @uri, country: @countryName
@@ -133,24 +153,6 @@ class Entry
     op.exec (err) =>
       (new User uri: @user).updateScore (err) =>
         cb err, @
-
-credentials = 
-  consumer:
-    key: "tcrzlUrmOHd6idGBYC4KTA"
-    secret: "JURa2YCNWAhgw47TubS6SoTWawGhSqYYEq94f2bdUc"
-  token:
-    key: "315955679-zp64SIsgXwlW28qDEDt69APrql7u0AJFJFthJXoS"
-    secret: "4BYQzGuK3dd5tNbo8orWwiFS9f7dZOATvz8MrLnrQ"
-
-oa = new OAuth(
-  "https://twitter.com/oauth/request_token"
-  "https://twitter.com/oauth/access_token"
-  credentials.consumer.key
-  credentials.consumer.secret
-  "1.0A"
-  null
-  "HMAC-SHA1"
-)
 
 class Tweet
   @listen: ->
@@ -340,8 +342,8 @@ class User
           today = (0 | new Date / 86400000) - 15186
           user.entries = ({day: num, future: num >= today} for num in [0..29])
           keys = Object.keys props
-          i = keys.length
-          
+          i = 30
+
           do run = ->
             return cb null, user unless i--
 
