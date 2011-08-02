@@ -51,7 +51,7 @@ class Entry
         @thumbWidth = obj.thumbnail_width
         @thumbHeight = obj.thumbnail_height
 
-      else @invalid = "notPhoto"
+      else @invalid = "type is #{obj?.type}, not photo"
       
       cb null
 
@@ -322,7 +322,17 @@ class User
 
   constructor: (attrs) ->
     @[key] = value for key, value of attrs
- 
+
+  fetch: (cb) ->
+    oa.get(
+      "http://api.twitter.com/1/users/show.json?screen_name=#{@handle}"
+      credentials.token.key
+      credentials.token.secret
+      (err, data) =>
+        if err then cb err
+        else cb JSON.parse data
+    )
+
   read: (cb) ->
     db.exists @uri, (err, exists) =>
       if err then cb message: err
