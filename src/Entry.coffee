@@ -128,6 +128,6 @@ class Entry
 
     op.exec (err) =>
       (new User uri: @user).updateScore ->
-      cb err, @
+        cb err, @
 
 module.exports = Entry

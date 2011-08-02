@@ -6,4 +6,5 @@ if id
   tweet = new Tweet id_str: id
   tweet.fetch -> tweet.process -> process.exit 1
 
-else console.log "invalid id: #{id}"
+else
+  console.log "invalid id: #{id}"
