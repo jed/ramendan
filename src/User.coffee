@@ -46,9 +46,11 @@ class User
           
           do run = ->
             return cb null, user unless i--
-            (new Entry uri: props[i]).read (err, entry) ->
-              user.entries[entry.day] = entry
-              run()
+
+            if i of props
+              (new Entry uri: props[i]).read (err, entry) ->
+                user.entries[entry.day] = entry
+                run()
 
   attr: (key, val, cb) ->
     db.hset @uri, key, val, cb or ->
