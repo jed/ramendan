@@ -1,4 +1,5 @@
 db = require "./db"
+Entry = require "./Entry"
 
 class User
   @top: (cb) ->
