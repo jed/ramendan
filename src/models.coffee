@@ -43,15 +43,12 @@ class Entry
     req = embedly.oembed url: @url
 
     req.on "complete", ([obj]) =>
-      if obj?.type is "photo"
-        @img = obj.url
-        @height = obj.height
-        @width = obj.width
-        @thumb = obj.thumbnail_url
-        @thumbWidth = obj.thumbnail_width
-        @thumbHeight = obj.thumbnail_height
-
-      else @invalid = "type is #{obj?.type}, not photo"
+      @img = obj.url
+      @height = obj.height
+      @width = obj.width
+      @thumb = obj.thumbnail_url
+      @thumbWidth = obj.thumbnail_width
+      @thumbHeight = obj.thumbnail_height
       
       cb null
 
